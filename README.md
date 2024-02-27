@@ -1,7 +1,5 @@
-# coderhouse-backend
+## Checklist - aula02 
 
-Repositório feito para conteúdo das aulas de Coderhouse - Backend.
-
-## Aulas separadas por branchs
-
-Cada aula com atividades e exercícios terá uma branch própria para que os arquivos fiquem melhor organizados. 
+- [x] Atividade de sala de aula - atividade.js
+- [ ] HandsOn com instrutora Jeniffer - TicketManager.js
+- [x] Exercício Obrigatório - ProductManager.js
