@@ -1,5 +1,3 @@
-## Checklist - aula02 
+## Checklist - aula03 
 
-- [x] Atividade de sala de aula - atividade.js
-- [ ] HandsOn com instrutora Jeniffer - TicketManager.js
-- [x] Exercício Obrigatório - ProductManager.js
+- [ ] Hands on Lab - Calculadora positiva com promises - calculadora.js
