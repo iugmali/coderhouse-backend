@@ -1,3 +1,3 @@
-## Checklist - aula03 
+## Checklist - aula04 
 
-- [ ] Hands on Lab - Calculadora positiva com promises - calculadora.js
+- [ ] Atividade em Sala - Armazenar hora e data - atividade.js
