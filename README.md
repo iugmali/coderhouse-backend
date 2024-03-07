@@ -1,5 +1,5 @@
-## Checklist - aula04 
+## Checklist - aula05
 
-- [x] Atividade em Sala - Armazenar hora e data - atividade.js
-- [x] Hands on Lab - ManagerUsers.js
-- [x] Desafio Obrigatório - ProductManager.js
+- [x] Projeto em node - :open_file_folder: projeto-em-node
+- [x] Hands on Lab - :open_file_folder: validador-usuario
+- [x] Atividade em Sala - Calculadora de idade - :open_file_folder: calculadora-idade
