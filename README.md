@@ -1,3 +1,4 @@
-## Checklist - aula06
+## Checklist - aula07
 
-- [x] Desafio Obrigatório
+- [x] Atividade em sala - `palavras`
+- [x] Exemplo de api - `users`

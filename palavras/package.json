@@ -1,7 +1,7 @@
 {
-  "name": "coderhouse-backend",
+  "name": "palavras",
   "version": "1.0.0",
-  "description": "desafio obrigatorio - aula06",
+  "description": "",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js"
