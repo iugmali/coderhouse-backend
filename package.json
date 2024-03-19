@@ -1,7 +1,7 @@
 {
-  "name": "palavras",
-  "version": "1.0.0",
-  "description": "",
+  "name": "coderhouse-backend",
+  "version": "0.0.1",
+  "description": "Projeto desenvolvido para o curso de backend da CoderHouse",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js"

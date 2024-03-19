@@ -1,0 +1,77 @@
+GET http://localhost:8080/api/products
+
+###
+
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "title": "Product 1",
+  "description": "Description 1",
+  "code": "P1",
+  "price": 100,
+  "status": false,
+  "stock": 10,
+  "category": "Category 1"
+}
+
+###
+
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "title": "Product 3",
+  "description": "Description 1",
+  "code": "P3",
+  "price": 100,
+  "status": true,
+  "stock": 10,
+  "category": "Category 1"
+}
+
+###
+
+PUT http://localhost:8080/api/products/1
+Content-Type: application/json
+
+{
+  "code": "P2"
+}
+
+###
+
+DELETE http://localhost:8080/api/products/2
+
+###
+
+GET http://localhost:8080/api/products?limit=1
+
+###
+
+GET http://localhost:8080/api/products/1
+
+###
+
+GET http://localhost:8080/api/products/2
+
+###
+
+POST http://localhost:8080/api/carts
+
+###
+
+GET http://localhost:8080/api/carts/1
+
+###
+
+POST http://localhost:8080/api/carts/1/product/1
+
+###
+
+POST http://localhost:8080/api/carts/1/product/2
+Content-Type: application/json
+
+{
+  "quantity": 10
+}
