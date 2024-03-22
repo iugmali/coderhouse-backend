@@ -1,29 +1,22 @@
-const fs = require('fs');
+import Persistence from "../lib/services/persistence.service.js";
+import {NotFoundError} from "../lib/utils/errors.js";
 
 class CartRepository {
   constructor(path) {
-    this.path = path;
+    this.persistence = new Persistence(path);
   }
 
   #readCarts = async () => {
     try {
-      const fileData = await fs.promises.readFile(this.path, "utf-8");
-      if (!fileData.trim()) {
-        return [];
-      }
-      return JSON.parse(fileData);
+      return await this.persistence.readItems();
     } catch (e) {
-      if (e.code === 'ENOENT') {
-        await fs.promises.writeFile(this.path, '[]');
-        return [];
-      }
       throw e;
     }
   }
 
   #saveCarts = async (carts) => {
     try {
-      await fs.promises.writeFile(this.path, JSON.stringify(carts));
+      await this.persistence.saveItems(carts);
     } catch (e) {
       throw e;
     }
@@ -34,7 +27,7 @@ class CartRepository {
       const carts = await this.#readCarts();
       const cart = carts.find((cart) => cart.id === id);
       if (!cart) {
-        throw new Error("Carrinho não encontrado.");
+        throw new NotFoundError("Carrinho não encontrado.");
       }
       return cart;
     } catch (e) {
@@ -66,7 +59,7 @@ class CartRepository {
         return cart.id === id;
       });
       if (!cart) {
-        throw new Error("Carrinho não encontrado.");
+        throw new NotFoundError("Carrinho não encontrado.");
       }
       let pIndex;
       const existingProduct = cart.products.find((p, i) => {
@@ -87,4 +80,4 @@ class CartRepository {
 
 }
 
-module.exports = CartRepository;
+export default CartRepository;

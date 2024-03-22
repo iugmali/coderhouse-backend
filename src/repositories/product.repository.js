@@ -1,29 +1,22 @@
-const fs = require("fs");
+import Persistence from "../lib/services/persistence.service.js";
+import {BadRequestError, NotFoundError} from "../lib/utils/errors.js";
 
 class ProductRepository {
   constructor(path) {
-    this.path = path;
+    this.persistence = new Persistence(path);
   }
 
   #readProducts = async () => {
     try {
-      const fileData = await fs.promises.readFile(this.path, "utf-8");
-      if (!fileData.trim()) {
-        return [];
-      }
-      return JSON.parse(fileData);
+      return await this.persistence.readItems();
     } catch (e) {
-      if (e.code === 'ENOENT') {
-        await fs.promises.writeFile(this.path, '[]');
-        return [];
-      }
       throw e;
     }
   }
 
   #saveProducts = async (products) => {
     try {
-      await fs.promises.writeFile(this.path, JSON.stringify(products));
+      await this.persistence.saveItems(products);
     } catch (e) {
       throw e;
     }
@@ -40,11 +33,11 @@ class ProductRepository {
   addProduct = async ({title, description, code, price, status, stock, category, thumbnails = []}) => {
     try {
       if (!title || title.trim() === "" || !description || description.trim() === "" || !code || code.trim() === "" || !price || price <= 0 || !stock || stock <= 0 || !category || category.trim() === "") {
-        throw new Error("Produto inválido.");
+        throw new BadRequestError("Produto inválido.");
       }
       const products = await this.#readProducts();
       if (products.find((product) => product.code === code)) {
-        throw new Error("Código já existe.");
+        throw new BadRequestError("Código já existe.");
       }
       const lastId = products[products.length - 1]?.id ?? 0;
       const product = {
@@ -71,7 +64,7 @@ class ProductRepository {
       const products = await this.#readProducts();
       const product = products.find((product) => product.id === id);
       if (!product) {
-        throw new Error("Não encontrado");
+        throw new NotFoundError("Não encontrado");
       }
       return product;
     } catch (e) {
@@ -88,7 +81,10 @@ class ProductRepository {
         return product.id === id;
       });
       if (!product) {
-        throw new Error("Não encontrado");
+        throw new NotFoundError("Não encontrado");
+      }
+      if (products.find((product) => product.code === enteredProduct.code && product.id !== id)) {
+        throw new BadRequestError("Código já existe.");
       }
       const updatedProduct = {
         id: product.id,
@@ -113,7 +109,7 @@ class ProductRepository {
       const products = await this.#readProducts();
       const index = products.findIndex((product) => product.id === id);
       if (index === -1) {
-        throw new Error("Não encontrado");
+        throw new NotFoundError("Não encontrado");
       }
       products.splice(index, 1);
       await this.#saveProducts(products);
@@ -123,4 +119,4 @@ class ProductRepository {
   }
 }
 
-module.exports = ProductRepository;
+export default ProductRepository;

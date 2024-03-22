@@ -2,7 +2,7 @@
   "name": "coderhouse-backend",
   "version": "0.0.1",
   "description": "Projeto desenvolvido para o curso de backend da CoderHouse",
-  "main": "src/app.js",
+  "type": "module",
   "scripts": {
     "start": "node src/app.js"
   },
@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.3"
+    "express": "^4.18.3",
+    "express-handlebars": "^7.1.2",
+    "socket.io": "^4.7.5"
   }
 }

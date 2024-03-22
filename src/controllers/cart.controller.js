@@ -26,7 +26,6 @@ class CartController {
       throw e;
     }
   };
-
 }
 
-module.exports = CartController;
+export default CartController;
