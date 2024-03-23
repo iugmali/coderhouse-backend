@@ -1,4 +1,3 @@
-import Persistence from "../lib/services/persistence.service.js";
 import {NotFoundError} from "../lib/utils/errors.js";
 
 class CartRepository {

@@ -3,9 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import ProductController from '../controllers/product.controller.js';
 import ProductRepository from '../repositories/product.repository.js';
+import PersistenceService from "../lib/services/persistence.service.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const productController = new ProductController(new ProductRepository(join(__dirname, '..', 'lib/data/products.json')));
+const productController = new ProductController(new ProductRepository(new PersistenceService(join(__dirname, '..', 'lib/data/products.json'))));
 const router = Router();
 
 router.get('/', async (req, res) => {

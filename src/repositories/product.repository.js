@@ -1,4 +1,3 @@
-import Persistence from "../lib/services/persistence.service.js";
 import {BadRequestError, NotFoundError} from "../lib/utils/errors.js";
 
 class ProductRepository {

@@ -36,7 +36,7 @@ PUT http://localhost:8080/api/products/3
 Content-Type: application/json
 
 {
-  "title": "Product 3",
+  "title": "Produto 3",
   "code": "P3",
   "description": "Descrição 3",
   "price": 300
