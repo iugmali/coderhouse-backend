@@ -2,8 +2,8 @@ import Persistence from "../lib/services/persistence.service.js";
 import {BadRequestError, NotFoundError} from "../lib/utils/errors.js";
 
 class ProductRepository {
-  constructor(path) {
-    this.persistence = new Persistence(path);
+  constructor(persistence) {
+    this.persistence = persistence;
   }
 
   #readProducts = async () => {
@@ -64,7 +64,7 @@ class ProductRepository {
       const products = await this.#readProducts();
       const product = products.find((product) => product.id === id);
       if (!product) {
-        throw new NotFoundError("Não encontrado");
+        throw new NotFoundError("Produto não encontrado.");
       }
       return product;
     } catch (e) {
@@ -81,7 +81,7 @@ class ProductRepository {
         return product.id === id;
       });
       if (!product) {
-        throw new NotFoundError("Não encontrado");
+        throw new NotFoundError("Produto não encontrado.");
       }
       if (products.find((product) => product.code === enteredProduct.code && product.id !== id)) {
         throw new BadRequestError("Código já existe.");
@@ -109,7 +109,7 @@ class ProductRepository {
       const products = await this.#readProducts();
       const index = products.findIndex((product) => product.id === id);
       if (index === -1) {
-        throw new NotFoundError("Não encontrado");
+        throw new NotFoundError("Produto não encontrado.");
       }
       products.splice(index, 1);
       await this.#saveProducts(products);

@@ -4,7 +4,8 @@
   "description": "Projeto desenvolvido para o curso de backend da CoderHouse",
   "type": "module",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +14,8 @@
     "express": "^4.18.3",
     "express-handlebars": "^7.1.2",
     "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "vitest": "^1.4.0"
   }
 }
