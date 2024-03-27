@@ -1,3 +1,5 @@
-## Checklist - aula10
+## Checklist - aula11
 
-- [x] Desafio Obrigatório
+- [x] Criação de um aplicativo de chat com websockets
+
+
