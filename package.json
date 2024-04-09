@@ -4,15 +4,16 @@
   "description": "Projeto desenvolvido para o curso de backend da CoderHouse",
   "type": "module",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node --env-file=.env src/app.js",
     "test": "vitest"
   },
   "keywords": [],
-  "author": "",
+  "author": "Guilherme Almeida",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.3",
     "express-handlebars": "^7.1.2",
+    "mongoose": "^8.3.0",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
