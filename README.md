@@ -1,5 +1,3 @@
-## Checklist - aula11
+# checklist - aula 14
 
-- [x] Criação de um aplicativo de chat com websockets
-
-
+- [x] - Criação de uma aplicação express simples com mongoose

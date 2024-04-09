@@ -1,0 +1,43 @@
+@HOST= http://localhost:8081
+
+### GetUsers
+GET {{HOST}}/api/users
+
+### AddUser
+POST {{HOST}}/api/users
+Content-Type: application/json
+
+{
+    "first_name": "Guilherme",
+  "last_name": "Almeida",
+  "email": "iugmali23@iugmali.com"
+}
+
+### GetAlunos
+GET {{HOST}}/api/alunos
+
+### AddAluno
+POST {{HOST}}/api/alunos
+Content-Type: application/json
+
+{
+    "nome": "Guilherme",
+  "sobrenome": "Almeida",
+  "idade": 36,
+  "dni": "123456222789",
+  "curso": "Backend",
+  "nota": 10
+}
+
+### AddAlunoWithoutSobrenome
+// Expect error 400
+POST {{HOST}}/api/alunos
+Content-Type: application/json
+
+{
+  "nome": "Guilherme",
+  "idade": 36,
+  "dni": "123456222789",
+  "curso": "Backend",
+  "nota": 10
+}

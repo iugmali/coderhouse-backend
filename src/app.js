@@ -1,74 +1,40 @@
-import express from 'express';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { createServer } from 'node:http';
-import { Server } from "socket.io";
-
-import { engine } from "express-handlebars";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
+// Importa o módulo 'express' para criar o aplicativo Express
+const express = require('express');
+// Cria uma instância do aplicativo Express
 const app = express();
-const server = createServer(app);
-const io = new Server(server);
-const messages = [];
+// Importa os roteadores para usuários e pets
+const usersRouter = require('./routes/usersRouter');
+const petsRouter = require('./routes/petsRouter');
+const alunosRouter = require('./routes/alunosRouter');
 
-app.engine('handlebars', engine());
-app.set('view engine', 'handlebars');
-app.set('views', join(__dirname, 'views'));
-
-app.use(express.urlencoded({ extended: true }));
+const mongoose = require ('mongoose')
+// Middleware para analisar o corpo das requisições no formato JSON
+// Isso permite que o Express analise os corpos das requisições HTTP com Content-Type 'application/json'
 app.use(express.json());
+// Middleware para capturar erros não tratados
 
-app.use(express.static(join(__dirname, 'public')));
 
-io.on('connection', (socket) => {
-  socket.emit('messages', messages);
-  socket.on('join', (name) => {
-    messages.push({ author: 'ajhdjhaksdhaushdiua', message: `${name} entrou na sala` });
-    io.emit('messages', messages);
-    io.emit('join', name);
-  });
-  socket.on('leave', (name) => {
-    messages.push({ author: 'ajhdjhaksdhaushdiua', message: `${name} saiu da sala` });
-    io.emit('messages', messages);
-  });
-  socket.on('message', async (message) => {
-    const encodedParams = new URLSearchParams();
-    encodedParams.set('content', message.message);
-    encodedParams.set('censor-character', '*');
-    const url = 'https://neutrinoapi-bad-word-filter.p.rapidapi.com/bad-word-filter';
-    const options = {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded',
-        'X-RapidAPI-Key': process.env.RAPID_API_KEY,
-        'X-RapidAPI-Host': 'neutrinoapi-bad-word-filter.p.rapidapi.com'
-      },
-      body: encodedParams
-    };
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        messages.push(message);
-        io.emit('messages', messages);
-        return;
-      }
-      const result = JSON.parse(await response.text());
-      console.log(result);
-      message.message = result['censored-content'];
-      messages.push(message);
-      io.emit('messages', messages);
-    } catch (error) {
-      console.error(error);
+mongoose.connect(process.env.MONGODB_CONNECTION)
+.catch((error)=>{
+    if(error){
+        console.log('Não foi possível conectar ao banco de dados: '+ error)
+        process.exit()
     }
-  });
-});
+})
 
-app.get('/', (req, res) => {
-  res.render('index', { title: 'Chat' });
-});
+// Roteador para lidar com as rotas relacionadas aos usuários
+// Define que todas as requisições feitas para '/api/users' serão tratadas pelo roteador usersRouter
+// Ou seja, todas as rotas definidas no usersRouter terão o prefixo '/api/users'
+app.use('/api/users', usersRouter);
 
-server.listen(8080, () => {
-  console.log('Servidor iniciado na porta 8080');
+// Roteador para lidar com as rotas relacionadas aos pets
+// Define que todas as requisições feitas para '/api/pets' serão tratadas pelo roteador petsRouter
+// Ou seja, todas as rotas definidas no petsRouter terão o prefixo '/api/pets'
+app.use('/api/pets', petsRouter);
+
+app.use('/api/alunos', alunosRouter);
+
+// Inicia o servidor Express e o faz escutar na porta 8080
+app.listen(8081, () => {
+    console.log(`Servidor rodando na porta 8081`);
 });
