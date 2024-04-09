@@ -1,11 +1,11 @@
 class CartController {
-  constructor(cartRepository) {
-    this.cartRepository = cartRepository;
+  constructor(cartService) {
+    this.cartService = cartService;
   }
 
   getCart = async (id) => {
     try {
-      return await this.cartRepository.getCartById(id);
+      return await this.cartService.getCartById(id);
     } catch (e) {
       throw e;
     }
@@ -13,7 +13,7 @@ class CartController {
 
   addCart = async (cart) => {
     try {
-      await this.cartRepository.addCart(cart);
+      return await this.cartService.addCart(cart);
     } catch (e) {
       throw e;
     }
@@ -21,7 +21,7 @@ class CartController {
 
   addProductToCart = async (id, product) => {
     try {
-      await this.cartRepository.addProductToCart(id, product);
+      return await this.cartService.addProductToCart(id, product);
     } catch (e) {
       throw e;
     }

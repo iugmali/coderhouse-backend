@@ -1,11 +1,11 @@
 class ProductController {
-  constructor(productRepository) {
-    this.productRepository = productRepository;
+  constructor(productService) {
+    this.productService = productService;
   }
 
-  getProducts = async () => {
+  getProducts = async (limit) => {
     try {
-      return await this.productRepository.getProducts();
+      return await this.productService.getProducts(limit);
     } catch (e) {
       throw e;
     }
@@ -13,7 +13,7 @@ class ProductController {
 
   addProduct = async (product) => {
     try {
-      await this.productRepository.addProduct(product);
+      return await this.productService.addProduct(product);
     } catch (e) {
       throw e;
     }
@@ -21,7 +21,7 @@ class ProductController {
 
   getProduct = async (id) => {
     try {
-      return await this.productRepository.getProductById(id);
+      return await this.productService.getProductById(id);
     } catch (e) {
       throw e;
     }
@@ -29,7 +29,7 @@ class ProductController {
 
   updateProduct = async (id, product) => {
     try {
-      await this.productRepository.updateProduct(id, product);
+      return await this.productService.updateProduct(id, product);
     } catch (e) {
       throw e;
     }
@@ -37,7 +37,7 @@ class ProductController {
 
   deleteProduct = async (id) => {
     try {
-      await this.productRepository.deleteProduct(id);
+      await this.productService.deleteProduct(id);
     } catch (e) {
       throw e;
     }
