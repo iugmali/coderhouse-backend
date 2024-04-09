@@ -1,0 +1,73 @@
+// Descomente a linha abaixo caso não tenha o arquivo http-client.env.json configurado
+#@HostAddress= http://localhost:8080
+
+@ProductId= 66148cdbeb2602452fa9e37d
+@CartId= 1
+
+### GetProducts
+GET {{HostAddress}}/api/products
+
+### GetProductsLimited
+GET {{HostAddress}}/api/products?limit=1
+
+### AddInvalidProduct
+POST {{HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "title": "",
+  "description": "Description 1",
+  "code": "P1",
+  "price": 100,
+  "status": true,
+  "stock": 10,
+  "category": "Category 1"
+}
+
+### AddProduct
+POST {{HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "title": "Product 8",
+  "description": "Description muito grande para um produto. É um produto muito bom e barato. Aproveite!",
+  "code": "p8",
+  "price": 1000,
+  "stock": 20,
+  "category": "Category 1"
+}
+
+### UpdateProduct
+PUT {{HostAddress}}/api/products/{{ProductId}}
+Content-Type: application/json
+
+{
+  "title": "Produto Descritivo",
+  "description": "Description muito grande para um produto. É um produto muito bom e barato. Aproveite! milhoes de produtos vendidos. Aproveite!",
+  "code": "P888",
+  "price": 300
+}
+
+### DeleteProduct
+DELETE {{HostAddress}}/api/products/{{ProductId}}
+
+
+### GetProduct
+GET {{HostAddress}}/api/products/{{ProductId}}
+
+### AddCart
+POST {{HostAddress}}/api/carts
+
+### GetCart
+GET {{HostAddress}}/api/carts/{{CartId}}
+
+### AddProductToCart
+POST {{HostAddress}}/api/carts/{{CartId}}/product/{{ProductId}}
+
+### AddProductToCartWithQuantity
+POST {{HostAddress}}/api/carts/{{CartId}}/product/{{ProductId}}
+Content-Type: application/json
+
+{
+  "quantity": 2
+}
