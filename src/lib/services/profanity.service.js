@@ -1,5 +1,5 @@
 import wordlist from '../data/bad-words.js';
-class Profanity {
+class ProfanityService {
   phrase;
   config;
   censuredPhrase = '';
@@ -43,4 +43,4 @@ class Profanity {
     }).length > 0;
   }
 }
-export default Profanity;
+export default ProfanityService;

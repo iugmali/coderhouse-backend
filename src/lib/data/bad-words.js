@@ -725,6 +725,6 @@ export default [
   'Xoxota',
   'Xana',
   'Xaninha',
-  'iugmali-webchat-server',
+  'coder-chat-server',
   'xxx',
 ]

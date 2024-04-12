@@ -93,7 +93,7 @@ Swal.fire({
   function addMessage (message) {
     const msgElem = document.createElement('div');
     msgElem.className = 'message';
-    msgElem.innerHTML = message.user === 'iugmali-webchat-server'
+    msgElem.innerHTML = message.user === 'coder-chat-server'
       ? `<span class="system">${message.message}</span>`
       : `<strong>${message.user}:</strong> ${message.message}`;
     messagesList.appendChild(msgElem);
