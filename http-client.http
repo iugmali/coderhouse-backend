@@ -1,7 +1,7 @@
 // Descomente a linha abaixo caso não tenha o arquivo http-client.env.json configurado
 #@HostAddress= http://localhost:8080
 
-@ProductId= 66148cdbeb2602452fa9e37d
+@ProductId= 6615fc3dd9adfd4de76b2793
 @CartId= 1
 
 ### GetProducts
@@ -11,6 +11,7 @@ GET {{HostAddress}}/api/products
 GET {{HostAddress}}/api/products?limit=1
 
 ### AddInvalidProduct
+// Deve retornar status 400
 POST {{HostAddress}}/api/products
 Content-Type: application/json
 
@@ -31,7 +32,7 @@ Content-Type: application/json
 {
   "title": "Product 8",
   "description": "Description muito grande para um produto. É um produto muito bom e barato. Aproveite!",
-  "code": "p8",
+  "code": "p88",
   "price": 1000,
   "stock": 20,
   "category": "Category 1"
@@ -42,9 +43,9 @@ PUT {{HostAddress}}/api/products/{{ProductId}}
 Content-Type: application/json
 
 {
-  "title": "Produto Descritivo",
-  "description": "Description muito grande para um produto. É um produto muito bom e barato. Aproveite! milhoes de produtos vendidos. Aproveite!",
-  "code": "P888",
+  "title": "Produto atualizado",
+  "description": "Milhoes de produtos vendidos. Aproveite!",
+  "code": "P8888",
   "price": 300
 }
 
