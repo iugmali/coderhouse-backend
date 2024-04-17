@@ -7,9 +7,6 @@ import ProductServiceFs from "../dao/services/filesystem/product.service.js";
 import ProductServiceDb from "../dao/services/db/product.service.js";
 import productModel from "../dao/models/product.model.js";
 import chatService from "../lib/services/chat.service.js";
-import socketServer from "../lib/socket.js";
-
-const io = socketServer.get();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const productService = process.env.PERSIST_MODE === 'filesystem'
@@ -31,8 +28,8 @@ router.get('/', async (req, res) => {
 
 router.get('/realtimeproducts', async (req, res) => {
     if (!realTimeProductsListenersAttached) {
-      io.on('connection', async (socket) => {
-        io.to(socket.id).emit('products', await productController.getProducts());
+      req.io.on('connection', async (socket) => {
+        req.io.to(socket.id).emit('products', await productController.getProducts());
       });
       realTimeProductsListenersAttached = true;
     }
@@ -41,7 +38,7 @@ router.get('/realtimeproducts', async (req, res) => {
 
 router.get('/chat', (req, res) => {
   if (!chatListenersAttached) {
-    chatService.attachListeners(io);
+    chatService.attachListeners(req.io);
     chatListenersAttached = true;
   }
   res.render('chat', {title: 'chat'});
