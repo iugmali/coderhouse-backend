@@ -1,14 +1,14 @@
-import Profanity from "./services/profanity.js";
+import ProfanityService from "./services/profanity.service.js";
 import mongoose from "mongoose";
 import {BadRequestError, NotFoundError} from "./exceptions/errors.js";
 
 export const isProfane = (word) => {
-  const profanity = new Profanity();
+  const profanity = new ProfanityService();
   return profanity.isProfane(word);
 };
 
 export const censorWord = (word) => {
-  const profanity = new Profanity();
+  const profanity = new ProfanityService();
   if (profanity.isProfane(word)) {
     return {
       word: profanity.censor(word),
@@ -24,13 +24,13 @@ export const handleValidationErrors = (e) => {
     Object.keys(e.errors).forEach((key) => {
       errors.push(e.errors[key].message);
     });
-    throw new BadRequestError(`Erro de validação: ${errors.join(' ')}`);
+    throw new BadRequestError(`Validation error: ${errors.join(' ')}`);
   }
 };
 
 export const handleNotFoundError = (e) => {
   if (e instanceof mongoose.Error.DocumentNotFoundError || e instanceof mongoose.Error.CastError) {
-    throw new NotFoundError('Documento não encontrado.');
+    throw new NotFoundError('Document not found.');
   }
 };
 
