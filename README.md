@@ -5,7 +5,7 @@ Aplicativo backend de ecommerce desenvolvido utilizando Node.js, Express, Mongoo
 
 ## Versão em produção
 
-Versão em produção disponível em: [https://coder.iugmali.com/](https://coder-backend.iugmali.com/)
+Versão em produção disponível em: [https://coder.iugmali.com/](https://coder.iugmali.com/)
 
 ## Instalação
 
