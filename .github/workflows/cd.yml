@@ -16,4 +16,4 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.PRIVATE_KEY }}
-          script: 'cd /app/coder-backend && . ./deploy.sh'
+          script: 'cd /app/coderhouse-backend && . ./deploy.sh'
