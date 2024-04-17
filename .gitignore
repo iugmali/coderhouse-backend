@@ -1,0 +1,13 @@
+# jetbrains project files
+.idea
+
+# dependencies
+node_modules
+
+# env files
+.env
+http-client.env.json
+
+# Filesystem data
+src/lib/data/carts.json
+src/lib/data/products.json

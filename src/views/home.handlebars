@@ -1,0 +1,17 @@
+<main>
+  <h1 class="heading">Produtos</h1>
+  <div class="container">
+    {{#if noProducts}}
+      <h1>Nenhum produto cadastrado</h1>
+    {{else}}
+      {{#each products}}
+        <div class="product box">
+          <h2>{{title}}</h2>
+          <p>Descrição: {{description}}</p>
+          <p>Preço: {{price}}</p>
+          <p>Código: {{code}}</p>
+        </div>
+      {{/each}}
+    {{/if}}
+  </div>
+</main>
