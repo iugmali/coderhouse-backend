@@ -13,7 +13,7 @@ import socketServer from "./lib/socket.js";
 
 mongoose.connect(process.env.MONGODB_CONNECTION, {dbName: 'ecommerce'})
   .catch((error)=>{
-    console.log('Não foi possível conectar ao banco de dados: '+ error);
+    console.log('Error connecting to the database: '+ error);
     process.exit();
   });
 
@@ -38,5 +38,5 @@ app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
 
 server.listen(8080, () => {
-  console.log('Servidor iniciado na porta 8080');
+  console.log('Server listening on port 8080...');
 });
