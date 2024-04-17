@@ -1,11 +1,11 @@
 # coderhouse-backend
 
 Projeto feito para desafios das aulas de Coderhouse - Backend, turma 54560.
-Aplicativo de ecommerce com Node.js, Express, MongoDB e Handlebars.
+Aplicativo backend de ecommerce desenvolvido utilizando Node.js, Express, Mongoose, Handlebars e Socket.io.
 
 ## Versão em produção
 
-Versão em produção disponível em: [https://coder-backend.iugmali.com/](https://coder-backend.iugmali.com/)
+Versão em produção disponível em: [https://coder.iugmali.com/](https://coder-backend.iugmali.com/)
 
 ## Instalação
 
@@ -21,8 +21,8 @@ Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis de ambient
 PERSIST_MODE=
 MONGODB_CONNECTION=
 ```
-- PERSIST_MODE="filesystem" para persistir os datos de produtos e carts em arquivos, ou PERSIST_MODE="mongodb" para persistir em um banco de dados MongoDB.
-- MONGODB_CONNECTION precisa ser a string de conexão do seu banco de dados MongoDB, caso opte pela conexão ao mongodb.
+- `PERSIST_MODE="filesystem"` para persistir os datos de produtos e carts em arquivos, ou `PERSIST_MODE="mongodb"` para persistir em um banco de dados MongoDB.
+- `MONGODB_CONNECTION` precisa ser a string de conexão do seu banco de dados MongoDB, caso opte pela persistência via mongodb.
 
 ## Execução
 
@@ -35,12 +35,12 @@ O projeto estará disponível em `http://localhost:8080`.
 
 ## API endpoints (com exemplos)
 
-- **GetProducts**
+- **Listando Produtos**
   ```
   GET /api/products
   ```
 
-- **Recuperando produtos limitando o número**
+- **Listando produtos limitando o número em 1**
   ```
   GET /api/products?limit=1
   ```
@@ -61,41 +61,49 @@ O projeto estará disponível em `http://localhost:8080`.
     }
   ```
 
-- **GetProduct**
+- **Recuperando um produto pelo id {productId}**
   ```
-  GET /api/products/{id}
+  GET /api/products/{productId}
   ```
 
-- **UpdateProduct**
+- **Atualizando um ou mais campos de um produto de id {productId}**
   ```
-  PUT /api/products/{id}
+  PUT /api/products/{productId}
   Content-Type: application/json
   ```
-
-- **DeleteProduct**
+  ```json
+    {
+      "title": "Título do produto atualizado"
+    }
   ```
-  DELETE /api/products/{id}
+
+- **Removendo um produto pelo id {productId}**
+  ```
+  DELETE /api/products/{productId}
   ```
 
-- **AddCart**
+- **Adicionando um carrinho sem produtos**
   ```
   POST /api/carts
   ```
 
-- **GetCart**
+- **Recuperando um carrinho pelo id {cartId}**
   ```
-  GET /api/carts/{id}
+  GET /api/carts/{cartId}
   ```
 
-- **AddProductToCart**
+- **Adicionando um produto de id {productId} ao carrinho de id {cartId}**
   ```
   POST /api/carts/{cartId}/product/{productId}
   ```
 
-- **AddProductToCartWithQuantity**
+- **Adicionando 10 unidades de um produto de id {productId} ao carrinho {cartId}**
   ```
   POST /api/carts/{cartId}/product/{productId}
   Content-Type: application/json
   ```
-
-Substitua `{id}`, `{cartId}`, and `{productId}` pelos IDs quando usar esses endpoints.
+   ```json
+    {
+      "quantity": 10
+    }
+  ```
