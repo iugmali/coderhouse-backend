@@ -7,7 +7,9 @@ import PersistenceService from "../dao/services/filesystem/persistence.service.j
 import ProductServiceFs from "../dao/services/filesystem/product.service.js";
 import ProductServiceDb from "../dao/services/db/product.service.js";
 import productModel from "../dao/models/product.model.js";
-import {io} from "../app.js";
+import socketServer from "../lib/socket.js";
+
+const io = socketServer.get();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

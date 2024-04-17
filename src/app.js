@@ -21,9 +21,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const server = createServer(app);
-socketServer.start(server);
-export const io = socketServer.get();
 
+socketServer.start(server);
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
