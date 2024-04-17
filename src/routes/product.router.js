@@ -7,9 +7,6 @@ import PersistenceService from "../dao/services/filesystem/persistence.service.j
 import ProductServiceFs from "../dao/services/filesystem/product.service.js";
 import ProductServiceDb from "../dao/services/db/product.service.js";
 import productModel from "../dao/models/product.model.js";
-import socketServer from "../lib/socket.js";
-
-const io = socketServer.get();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -45,7 +42,7 @@ router.get('/:pid', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const product = await productController.addProduct(req.body);
-    io.emit('products', await productController.getProducts());
+    req.io.emit('products', await productController.getProducts());
     res.status(201).json({message: 'Produto criado', payload: product});
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});
@@ -55,7 +52,7 @@ router.post('/', async (req, res) => {
 router.put('/:pid', async (req, res) => {
   try {
     const product = await productController.updateProduct(req.params.pid, req.body);
-    io.emit('products', await productController.getProducts());
+    req.io.emit('products', await productController.getProducts());
     res.status(200).json({message: 'Produto atualizado', payload: product});
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});
@@ -65,7 +62,7 @@ router.put('/:pid', async (req, res) => {
 router.delete('/:pid', async (req, res) => {
   try {
     await productController.deleteProduct(req.params.pid);
-    io.emit('products', await productController.getProducts());
+    req.io.emit('products', await productController.getProducts());
     res.status(204).json({message: 'Produto excluído'});
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});

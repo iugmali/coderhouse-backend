@@ -23,6 +23,7 @@ const app = express();
 const server = createServer(app);
 
 socketServer.start(server);
+const io = socketServer.get();
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -32,6 +33,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(express.static(join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 app.use('/', viewRouter);
 app.use('/api/carts', cartRouter);
