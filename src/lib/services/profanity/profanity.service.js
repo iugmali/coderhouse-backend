@@ -1,4 +1,4 @@
-import wordlist from '../data/bad-words.js';
+import wordlist from './bad-words.js';
 class ProfanityService {
   phrase;
   config;

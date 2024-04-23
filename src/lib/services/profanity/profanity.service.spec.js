@@ -1,6 +1,6 @@
 import { beforeEach, describe, it, expect } from "vitest";
 import ProfanityService from "./profanity.service.js";
-import badWords from "../data/bad-words.js";
+import badWords from "./bad-words.js";
 
 describe("ChatService", () => {
   describe("Profanity", () => {
