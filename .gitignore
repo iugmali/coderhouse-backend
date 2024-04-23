@@ -9,5 +9,5 @@ node_modules
 http-client.env.json
 
 # Filesystem data
-src/lib/data/carts.json
-src/lib/data/products.json
+data/carts.json
+data/products.json
