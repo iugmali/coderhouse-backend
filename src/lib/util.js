@@ -1,4 +1,4 @@
-import ProfanityService from "./services/profanity.service.js";
+import ProfanityService from "./services/profanity/profanity.service.js";
 import mongoose from "mongoose";
 import {BadRequestError, NotFoundError} from "./exceptions/errors.js";
 
