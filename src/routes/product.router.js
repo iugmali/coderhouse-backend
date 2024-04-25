@@ -7,11 +7,12 @@ import PersistenceService from "../dao/services/filesystem/persistence.service.j
 import ProductServiceFs from "../dao/services/filesystem/product.service.js";
 import ProductServiceDb from "../dao/services/db/product.service.js";
 import productModel from "../dao/models/product.model.js";
+import {handleProductQueries} from "../lib/util.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const productService = process.env.PERSIST_MODE === 'filesystem'
-  ? new ProductServiceFs(new PersistenceService(join(__dirname, '..', 'lib/data/products.json')))
+  ? new ProductServiceFs(new PersistenceService(join(__dirname, '..', '..', 'data/products.json')))
   : new ProductServiceDb(productModel);
 const productController = new ProductController(productService);
 
@@ -19,12 +20,9 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    let limit = +req.query.limit;
-    if (!limit || limit < 0) {
-      limit = 0;
-    }
-    const products = await productController.getProducts(limit);
-    res.json(products);
+    const options = handleProductQueries(req.query);
+    const result = await productController.getProducts(options);
+    res.json(result);
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});
   }

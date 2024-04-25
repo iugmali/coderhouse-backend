@@ -3,9 +3,9 @@ class ProductController {
     this.productService = productService;
   }
 
-  getProducts = async (limit) => {
+  getProducts = async (options) => {
     try {
-      return await this.productService.getProducts(limit);
+      return await this.productService.getProducts(options);
     } catch (e) {
       throw e;
     }

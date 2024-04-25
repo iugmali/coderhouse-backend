@@ -1,4 +1,4 @@
-import ProfanityService from "./profanity.service.js";
+import ProfanityService from "./profanity/profanity.service.js";
 import {censorWord, isProfane} from "../util.js";
 import MessageService from "../../dao/services/db/message.service.js";
 import messageModel from "../../dao/models/message.model.js";

@@ -21,10 +21,10 @@ class ProductService {
     }
   }
 
-  getProducts = async (limit) => {
+  getProducts = async (options) => {
     try {
-      if (limit > 0) {
-        return (await this.#readProducts()).slice(0, limit);
+      if (options.limit > 0) {
+        return (await this.#readProducts()).slice(0, options.limit);
       }
       return await this.#readProducts();
     } catch (e) {

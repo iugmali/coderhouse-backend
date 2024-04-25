@@ -19,9 +19,33 @@ class CartController {
     }
   };
 
+  updateCart = async (id, cart) => {
+    try {
+      return await this.cartService.updateCart(id, cart);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   addProductToCart = async (id, product) => {
     try {
       return await this.cartService.addProductToCart(id, product);
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  setProductQuantity = async (id, pid, quantity) => {
+    try {
+      return await this.cartService.setProductQuantity(id, pid, quantity);
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  removeProductsFromCart = async (id) => {
+    try {
+      return await this.cartService.removeProductsFromCart(id);
     } catch (e) {
       throw e;
     }

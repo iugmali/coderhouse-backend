@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const productSchema = new mongoose.Schema({
   title: {
@@ -43,5 +44,5 @@ const productSchema = new mongoose.Schema({
     default: Date.now
   }
 });
-
+productSchema.plugin(aggregatePaginate);
 export default mongoose.model('products', productSchema);
