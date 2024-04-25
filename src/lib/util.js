@@ -18,6 +18,20 @@ export const censorWord = (word) => {
   return { word, censored: false };
 };
 
+export const handleProductQueries = (queries) => {
+  let limit = +queries.limit;
+  let page = +queries.page;
+  let query = queries.query;
+  let sort = queries.sort;
+  if (!limit || limit < 0) {
+    limit = 10;
+  }
+  if (!page || page < 0) {
+    page = 1;
+  }
+  return { limit, page, query, sort };
+}
+
 export const handleValidationErrors = (e) => {
   if (e instanceof mongoose.Error.ValidationError) {
     let errors = [];

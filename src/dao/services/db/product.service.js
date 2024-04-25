@@ -1,4 +1,4 @@
-import {BadRequestError, InternalServerError} from "../../../lib/exceptions/errors.js";
+import {InternalServerError} from "../../../lib/exceptions/errors.js";
 import mongoose from "mongoose";
 import {handleNotFoundError, handleUniqueIndexError, handleValidationErrors} from "../../../lib/util.js";
 
@@ -7,16 +7,31 @@ class ProductService {
     this.model = model;
   }
 
-  getProducts = async (limit) => {
+  getProducts = async ({limit, page, sort, query}) => {
+    const aggregateArray = [];
+    if (sort === 'asc') {
+      aggregateArray.push({$sort: {price: 1}});
+    } else if (sort === 'desc') {
+      aggregateArray.push({$sort: {price: -1}});
+    }
+    if (query) {
+      aggregateArray.push({$match: {category: {$regex: query, $options: 'i'}}});
+    }
     try {
-      if (limit > 0) {
-        return this.model.aggregate([
-          {$sort: {createdAt: -1}},
-          {$limit: limit},
-          {$sort: {createdAt: 1}}
-        ]);
-      }
-      return await this.model.find().lean();
+      const aggregate = this.model.aggregate(aggregateArray);
+      const queryResult = await this.model.aggregatePaginate(aggregate, {limit, page, lean: true});
+      return {
+        status: 'sucesso',
+        payload: queryResult.docs,
+        totalPages: queryResult.totalPages,
+        prevPage: queryResult.prevPage,
+        nextPage: queryResult.nextPage,
+        page: queryResult.page,
+        hasPrevPage: queryResult.hasPrevPage,
+        hasNextPage: queryResult.hasNextPage,
+        prevLink: !queryResult.hasPrevPage ? null : (`${process.env.BASE_URL}/products?limit=${limit}&page=${queryResult.prevPage}` + (sort ? `&sort=${sort}` : '') + (query ? `&query=${query}` : '')),
+        nextLink: !queryResult.hasNextPage ? null : (`${process.env.BASE_URL}/products?limit=${limit}&page=${queryResult.nextPage}` + (sort ? `&sort=${sort}` : '') + (query ? `&query=${query}` : '')),
+      };
     } catch (e) {
       throw new InternalServerError(e.message);
     }
