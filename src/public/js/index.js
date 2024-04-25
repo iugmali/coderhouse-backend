@@ -11,6 +11,7 @@ socket.on('products', (products) => {
             <h2>${product.title}</h2>
             <p>Descrição: ${product.description}</p>
             <p>Preço: ${product.price}</p>
+            <p>Categoria: ${product.category}</p>
             <p>Código: ${product.code}</p>
         `;
     productsList.appendChild(productElement);
