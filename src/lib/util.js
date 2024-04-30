@@ -1,6 +1,7 @@
 import ProfanityService from "./services/profanity/profanity.service.js";
 import mongoose from "mongoose";
 import {BadRequestError, NotFoundError} from "./exceptions/errors.js";
+import bcrypt from "bcrypt";
 
 export const isProfane = (word) => {
   const profanity = new ProfanityService();
@@ -17,6 +18,14 @@ export const censorWord = (word) => {
   }
   return { word, censored: false };
 };
+
+export const createHash = (password) => {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+};
+
+export const isValidPassword = async (user, password) => {
+  return bcrypt.compareSync(password, user.password);
+}
 
 export const handleProductQueries = (queries) => {
   let limit = +queries.limit;

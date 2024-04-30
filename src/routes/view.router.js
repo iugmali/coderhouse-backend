@@ -12,6 +12,7 @@ import productModel from "../dao/models/product.model.js";
 import chatService from "../lib/services/chat.service.js";
 import {handleProductQueries} from "../lib/util.js";
 import cartModel from "../dao/models/cart.model.js";
+import {checkAuth} from "../middleware/auth.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -35,19 +36,19 @@ router.get('/', async (req, res) => {
   res.render('home', {title: 'Coderhouse Backend'});
 });
 
-router.get('/products', async (req, res) => {
+router.get('/products', checkAuth, async (req, res) => {
   const options = handleProductQueries(req.query);
   const result = await productController.getProducts(options);
   const products = result.payload;
-  res.render('products', {title: 'Produtos', noProducts: products.length === 0, products, page: result.page, prevLink: result.prevLink, nextLink: result.nextLink});
+  res.render('products', {title: 'Produtos', user: req.session.user, noProducts: products.length === 0, products, page: result.page, prevLink: result.prevLink, nextLink: result.nextLink});
 });
 
-router.get('/carts/:cid', async (req, res) => {
+router.get('/carts/:cid', checkAuth, async (req, res) => {
   const cart = await cartController.getCart(req.params.cid);
-  res.render('cart', {title: 'Carrinho', noProducts: cart.products.length === 0, products: cart.products});
+  res.render('cart', {title: 'Carrinho', user: req.session.user, noProducts: cart.products.length === 0, products: cart.products});
 });
 
-router.get('/realtimeproducts', async (req, res) => {
+router.get('/realtimeproducts', checkAuth, async (req, res) => {
   const options = handleProductQueries(req.query);
   if (!realTimeProductsListenersAttached) {
     req.io.on('connection', async (socket) => {
@@ -55,7 +56,7 @@ router.get('/realtimeproducts', async (req, res) => {
     });
     realTimeProductsListenersAttached = true;
   }
-  res.render('realTimeProducts', {title: 'Produtos em tempo real'});
+  res.render('realTimeProducts', {title: 'Produtos em tempo real', user: req.session.user});
 });
 
 router.get('/chat', (req, res) => {

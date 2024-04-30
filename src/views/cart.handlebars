@@ -1,4 +1,8 @@
 <main>
+  <nav class="navbar">
+    <span>email: {{user.email}}, role: {{user.role}}</span>
+    <a href="/logout" class="button">Sair</a>
+  </nav>
   <h1 class="heading">Carrinho</h1>
   {{#if noProducts}}
     <p class="text-center mt1rem">Nenhum produto encontrado</p>
