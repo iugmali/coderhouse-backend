@@ -22,11 +22,16 @@ BASE_URL=
 PERSIST_MODE=
 MONGODB_CONNECTION=
 AUTH_SECRET=
+
+GITHUB_LOGIN_CLIENT_ID=
+GITHUB_LOGIN_CLIENT_SECRET=
+GITHUB_LOGIN_CALLBACK_URL=
 ```
 - `BASE_URL` é a URL base do projeto, por exemplo, `BASE_URL="http://localhost:8080"`.
 - `PERSIST_MODE="filesystem"` para persistir os datos de produtos e carts em arquivos, ou `PERSIST_MODE="mongodb"` para persistir em um banco de dados MongoDB.
 - `MONGODB_CONNECTION` precisa ser a string de conexão do seu banco de dados MongoDB, caso opte pela persistência via mongodb.
 - `AUTH_SECRET` é a chave secreta para a sessão de usuários. Execute o comando `openssl rand -base64 32` para gerar uma chave secreta.
+- `GITHUB_LOGIN_CLIENT_ID`, `GITHUB_LOGIN_CLIENT_SECRET` e `GITHUB_LOGIN_CALLBACK_URL` são as credenciais e a rota de callback para autenticação via GitHub.
 
 ## Execução
 
