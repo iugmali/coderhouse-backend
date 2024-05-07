@@ -36,6 +36,14 @@ router.post('/login', passport.authenticate('login', {
   res.redirect('/products');
 });
 
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }),
+  async (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/products');
+});
+
 router.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/login');

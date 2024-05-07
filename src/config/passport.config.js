@@ -1,4 +1,5 @@
 import passport from 'passport';
+import {Strategy as GithubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
 import { isValidPassword, createHash } from '../lib/util.js';
 import UserService from "../dao/services/db/user.service.js";
@@ -7,6 +8,30 @@ import User from "../dao/models/user.model.js";
 const userService = new UserService(User);
 
 const initializePassport = () => {
+  passport.use('github', new GithubStrategy({
+    clientID: process.env.GITHUB_LOGIN_CLIENT_ID,
+    clientSecret: process.env.GITHUB_LOGIN_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_LOGIN_CALLBACK_URL
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      const user = await userService.getUserByEmail(profile._json.email);
+      return done(null, user);
+    } catch (error) {
+      try {
+        const userFields = {
+          name: profile._json.name,
+          email: profile._json.email,
+          role: 'user',
+          password: ''
+        }
+        const result = await userService.createUser(userFields);
+        return done(null, result);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  }));
+
   passport.use('signup', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
