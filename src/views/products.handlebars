@@ -1,8 +1,5 @@
 <main>
-  <nav class="navbar">
-    <span>email: {{user.email}}, role: {{user.role}}</span>
-    <a href="/logout" class="button">Sair</a>
-  </nav>
+  {{> templates/nav}}
   <h1 class="heading">Produtos</h1>
   <form id="search-form" class="search-box">
     <input type="text" id="search-input" placeholder="Pesquisar por categoria">
@@ -19,7 +16,7 @@
           <p>Preço: {{price}}</p>
           <p>Categoria: {{category}}</p>
           <p>Código: {{code}}</p>
-          <button class="button cart-button">+ carrinho</button>
+          <button class="button cart-button">{{> icons/cart}}</button>
         </div>
       {{/each}}
     </div>
