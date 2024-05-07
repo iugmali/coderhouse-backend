@@ -1,8 +1,5 @@
 <main>
-  <nav class="navbar">
-    <span>email: {{user.email}}, role: {{user.role}}</span>
-    <a href="/logout" class="button">Sair</a>
-  </nav>
+  {{> templates/nav}}
   <h1 class="heading">Produtos em tempo real</h1>
   <div id="realtime" class="container"></div>
 </main>

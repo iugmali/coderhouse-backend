@@ -1,6 +1,5 @@
 import express from 'express';
 import session from 'express-session';
-import MongoStore from 'connect-mongo';
 import passport from "passport";
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -15,6 +14,7 @@ import { engine } from "express-handlebars";
 import mongoose from "mongoose";
 import socketServer from "./lib/socket.js";
 import initializePassport from "./config/passport.config.js";
+import {sessionConfig} from "./config/session.config.js";
 
 mongoose.connect(process.env.MONGODB_CONNECTION, {dbName: 'ecommerce'})
   .catch((error)=>{
@@ -38,16 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(join(__dirname, 'public')));
 
-app.use(session({
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_CONNECTION,
-    dbName: 'ecommerce',
-    ttl: 15,
-  }),
-  secret: process.env.AUTH_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+app.use(session(sessionConfig));
 
 initializePassport();
 app.use(passport.initialize());
