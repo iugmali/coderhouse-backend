@@ -23,13 +23,13 @@ describe('ProductService', () => {
   describe('getProducts', () => {
     it('should return a list of products', async () => {
       persistenceMock.readItems.mockResolvedValue(sampleProducts);
-      const result = await productService.getProducts();
+      const result = await productService.getProducts({limit: 10});
       expect(result).toEqual(sampleProducts);
     });
 
     it('should return a limited list of products', async () => {
       persistenceMock.readItems.mockResolvedValue(sampleProducts);
-      const result = await productService.getProducts(1);
+      const result = await productService.getProducts({limit: 1});
       expect(result).toEqual([sampleProducts[0]]);
     });
   });
