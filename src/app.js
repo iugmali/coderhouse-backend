@@ -15,8 +15,9 @@ import mongoose from "mongoose";
 import socketServer from "./lib/socket.js";
 import initializePassport from "./config/passport.config.js";
 import {sessionConfig} from "./config/session.config.js";
+import {MONGODB_CONNECTION} from "./config/config.js";
 
-mongoose.connect(process.env.MONGODB_CONNECTION, {dbName: 'ecommerce'})
+mongoose.connect(MONGODB_CONNECTION, {dbName: 'ecommerce'})
   .catch((error)=>{
     console.error('Error connecting to the database: '+ error);
     process.exit();
