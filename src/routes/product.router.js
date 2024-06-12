@@ -8,6 +8,7 @@ import ProductServiceFs from "../dao/services/filesystem/product.service.js";
 import ProductServiceDb from "../dao/services/db/product.service.js";
 import productModel from "../dao/models/product.model.js";
 import {handleProductQueries} from "../lib/util.js";
+import {checkAdminJson} from "../middleware/auth.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -37,7 +38,7 @@ router.get('/:pid', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', checkAdminJson, async (req, res) => {
   try {
     const product = await productController.addProduct(req.body);
     req.io.emit('products', await productController.getProducts());
@@ -47,7 +48,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:pid', async (req, res) => {
+router.put('/:pid', checkAdminJson, async (req, res) => {
   try {
     const product = await productController.updateProduct(req.params.pid, req.body);
     req.io.emit('products', await productController.getProducts());
@@ -57,7 +58,7 @@ router.put('/:pid', async (req, res) => {
   }
 });
 
-router.delete('/:pid', async (req, res) => {
+router.delete('/:pid', checkAdminJson, async (req, res) => {
   try {
     await productController.deleteProduct(req.params.pid);
     req.io.emit('products', await productController.getProducts());

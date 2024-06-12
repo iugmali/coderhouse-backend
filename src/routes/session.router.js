@@ -29,7 +29,7 @@ router.post('/login', passport.authenticate('login', {
 }), async (req, res) => {
   if (!req.user) return res.status(400).json({error: 'Credenciais invalidas'});
   req.session.user = {
-    name: req.user.name,
+    first_name: req.user.first_name,
     email: req.user.email,
     role: req.user.role
   }
@@ -42,6 +42,10 @@ router.get('/githubcallback', passport.authenticate('github', { failureRedirect:
   async (req, res) => {
     req.session.user = req.user;
     res.redirect('/products');
+});
+
+router.get('/api/sessions/current', (req, res) => {
+  res.json(req.session.user);
 });
 
 router.get('/logout', (req, res) => {

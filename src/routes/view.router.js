@@ -12,7 +12,7 @@ import productModel from "../dao/models/product.model.js";
 import chatService from "../lib/services/chat.service.js";
 import {handleProductQueries} from "../lib/util.js";
 import cartModel from "../dao/models/cart.model.js";
-import {checkAuth} from "../middleware/auth.js";
+import {checkAuth, checkAuthJson} from "../middleware/auth.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -59,7 +59,7 @@ router.get('/realtimeproducts', checkAuth, async (req, res) => {
   res.render('realTimeProducts', {title: 'Produtos em tempo real', user: req.session.user});
 });
 
-router.get('/chat', (req, res) => {
+router.get('/chat', checkAuth, (req, res) => {
   if (!chatListenersAttached) {
     chatService.attachListeners(req.io);
     chatListenersAttached = true;
@@ -67,7 +67,7 @@ router.get('/chat', (req, res) => {
   res.render('chat', {title: 'chat'});
 });
 
-router.post('/chat/usercheck', (req, res) => {
+router.post('/chat/usercheck', checkAuthJson, (req, res) => {
   const { username } = req.body;
   const userCheck = chatService.userCheck(username);
   res.status(userCheck.status).send();
