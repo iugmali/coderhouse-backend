@@ -4,6 +4,18 @@
 @ProductId= 6615fc3dd9adfd4de76b2793
 @CartId= 6629d416a1dff24a0cda6d0e
 
+### Login
+POST {{HostAddress}}/login
+Content-Type: application/json
+
+{
+  "email": "adminCoder@coder.com",
+  "password": "adminCod3r123"
+}
+
+### GetSession
+GET {{HostAddress}}/api/sessions/current
+
 ### GetProducts
 GET {{HostAddress}}/api/products
 
