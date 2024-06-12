@@ -50,6 +50,14 @@ class CartController {
       throw e;
     }
   };
+
+  purchase = async (id) => {
+    try {
+      return await this.cartService.purchase(id);
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 export default CartController;
