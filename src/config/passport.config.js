@@ -19,7 +19,7 @@ const initializePassport = () => {
     } catch (error) {
       try {
         const userFields = {
-          name: profile._json.name,
+          first_name: profile._json.name,
           email: profile._json.email,
           role: 'user',
           password: ''
@@ -37,10 +37,12 @@ const initializePassport = () => {
     passwordField: 'password',
     passReqToCallback: true
   }, async (req, email, password, done) => {
-    const { name } = req.body;
+    const { first_name, last_name, age } = req.body;
     const hashedPassword = createHash(password);
     const userFields = {
-      name,
+      first_name,
+      last_name,
+      age,
       email,
       role: 'user',
       password: hashedPassword
