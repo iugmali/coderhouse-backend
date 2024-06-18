@@ -31,8 +31,9 @@ router.post('/login', passport.authenticate('login', {
   req.session.user = {
     first_name: req.user.first_name,
     email: req.user.email,
-    role: req.user.role
-  }
+    role: req.user.role,
+    cart: req.user.cart
+  };
   res.redirect('/products');
 });
 
@@ -40,7 +41,12 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 
 router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }),
   async (req, res) => {
-    req.session.user = req.user;
+    req.session.user = {
+      first_name: req.user.first_name,
+      email: req.user.email,
+      role: req.user.role,
+      cart: req.user.cart
+    };
     res.redirect('/products');
 });
 
