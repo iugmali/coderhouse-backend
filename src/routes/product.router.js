@@ -41,7 +41,7 @@ router.get('/:pid', async (req, res) => {
 router.post('/', checkAdminJson, async (req, res) => {
   try {
     const product = await productController.addProduct(req.body);
-    req.io.emit('products', await productController.getProducts());
+    req.io.emit('products', await productController.getProducts(handleProductQueries({})));
     res.status(201).json({message: 'Produto criado', payload: product});
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});
@@ -51,7 +51,7 @@ router.post('/', checkAdminJson, async (req, res) => {
 router.put('/:pid', checkAdminJson, async (req, res) => {
   try {
     const product = await productController.updateProduct(req.params.pid, req.body);
-    req.io.emit('products', await productController.getProducts());
+    req.io.emit('products', await productController.getProducts(handleProductQueries({})));
     res.status(200).json({message: 'Produto atualizado', payload: product});
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});
@@ -61,7 +61,7 @@ router.put('/:pid', checkAdminJson, async (req, res) => {
 router.delete('/:pid', checkAdminJson, async (req, res) => {
   try {
     await productController.deleteProduct(req.params.pid);
-    req.io.emit('products', await productController.getProducts());
+    req.io.emit('products', await productController.getProducts(handleProductQueries({})));
     res.status(204).json({message: 'Produto excluído'});
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});
