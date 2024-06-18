@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import productModel from "../../models/product.model.js";
 import ProductService from "./product.service.js";
 import TicketService from "./ticket.service.js";
-import {handleNotFoundError, handleValidationErrors} from "../../../lib/util.js";
+import {generateCode, handleNotFoundError, handleValidationErrors} from "../../../lib/util.js";
 import ticketModel from "../../models/ticket.model.js";
 
 const productService = new ProductService(productModel);
@@ -55,14 +55,15 @@ class CartService {
     try {
       await this.model.findById(id);
     } catch (e) {
-      if (e instanceof mongoose.Error.DocumentNotFoundError || e instanceof mongoose.Error.CastError) {
-        throw new NotFoundError('Carrinho não encontrado.');
-      }
+      handleNotFoundError(e);
       throw new InternalServerError(e.message);
     }
     // catching product not found
     try {
       const cart = await this.model.findById(id);
+      if (!cart) {
+        throw new mongoose.Error.DocumentNotFoundError('Carrinho não encontrado.');
+      }
       const product = await productService.getProductById(enteredProduct.product);
       let pIndex;
       const existingProduct = cart.products.find((p, i) => {
@@ -110,20 +111,33 @@ class CartService {
     }
   }
 
-  purchase = async (id) => {
+  purchase = async (id, email) => {
     try {
       const cart = await this.model.findById(id);
       let amount = 0;
-      for (let p of cart.products) {
-        const product = await productService.getProductById(product.product);
+      for (const p of cart.products) {
+        const product = await productService.getProductById(p.product);
         if (product.stock < p.quantity) {
           continue;
         }
         product.stock -= p.quantity;
-        amount += p.price * product.quantity;
+        await productService.updateProduct(product._id, product);
+        amount += product.price * p.quantity;
         cart.products.splice(cart.products.indexOf(p), 1);
       }
+      if (amount === 0) {
+        return cart;
+      }
       await cart.save();
+      const ticket = await ticketService.createTicket({
+        code: generateCode(),
+        amount,
+        purchaser: email
+      })
+      return {
+        cart,
+        ticket
+      };
     } catch (e) {
       handleNotFoundError(e);
       throw new InternalServerError(e.message);
