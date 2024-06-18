@@ -55,7 +55,7 @@ router.post('/:cid/product/:pid', checkAuthJson, async (req, res) => {
 
 router.post('/:cid/purchase', checkAuthJson, async (req, res) => {
   try {
-    const cart = await cartController.purchase(req.params.cid);
+    const cart = await cartController.purchase(req.params.cid, req.session.user.email);
     res.status(200).json({message: "Produtos comprados e carrinho atualizado.", payload: cart});
   } catch (e) {
     res.status(e.statusCode).json({message: e.message});
