@@ -41,6 +41,16 @@ class UserService {
       throw new InternalServerError(e.message);
     }
   };
+
+  addCartToUser = async (email, cartId) => {
+    try {
+      const user = await this.getUserByEmail(email);
+      user.cart = cartId;
+      return await user.save();
+    } catch (e) {
+      throw new InternalServerError(e.message);
+    }
+  };
 }
 
 export default UserService;
