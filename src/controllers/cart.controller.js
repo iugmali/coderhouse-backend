@@ -51,9 +51,9 @@ class CartController {
     }
   };
 
-  purchase = async (id) => {
+  purchase = async (id, email) => {
     try {
-      return await this.cartService.purchase(id);
+      return await this.cartService.purchase(id, email);
     } catch (e) {
       throw e;
     }
