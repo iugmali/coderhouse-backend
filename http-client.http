@@ -1,10 +1,10 @@
 // Descomente a linha abaixo caso não tenha o arquivo http-client.env.json configurado
 #@HostAddress= http://localhost:8080
 
-@ProductId= 6615fc3dd9adfd4de76b2793
-@CartId= 6629d416a1dff24a0cda6d0e
+@ProductId= 6628fd902fb730e28bbbe701
+@CartId= 6671eeba0301d449ca7d7e63
 
-### Login
+### LoginAsAdmin
 POST {{HostAddress}}/login
 Content-Type: application/json
 
@@ -38,8 +38,8 @@ Content-Type: application/json
 
 {
   "title": "",
-  "description": "Description 1",
-  "code": "P1",
+  "description": "Nova descrição",
+  "code": "P1800",
   "price": 100,
   "status": true,
   "stock": 10,
@@ -104,8 +104,11 @@ POST {{HostAddress}}/api/carts/{{CartId}}/product/{{ProductId}}
 Content-Type: application/json
 
 {
-  "quantity": 2
+  "quantity": 3
 }
+
+### PurchaseProductsFromCart
+POST {{HostAddress}}/api/carts/{{CartId}}/purchase
 
 ### RemoveProductsFromCart
 DELETE {{HostAddress}}/api/carts/{{CartId}}
