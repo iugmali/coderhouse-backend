@@ -2,6 +2,7 @@ import ProfanityService from "./services/profanity/profanity.service.js";
 import mongoose from "mongoose";
 import {BadRequestError, NotFoundError} from "./exceptions/errors.js";
 import bcrypt from "bcrypt";
+import {randomUUID} from "crypto";
 
 export const isProfane = (word) => {
   const profanity = new ProfanityService();
@@ -22,6 +23,10 @@ export const censorWord = (word) => {
 export const createHash = (password) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 };
+
+export const generateCode = () => {
+  return randomUUID();
+}
 
 export const isValidPassword = async (user, password) => {
   return bcrypt.compareSync(password, user.password);
