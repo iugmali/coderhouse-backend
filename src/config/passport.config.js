@@ -4,8 +4,11 @@ import {Strategy as LocalStrategy} from 'passport-local';
 import { isValidPassword, createHash } from '../lib/util.js';
 import UserService from "../dao/services/db/user.service.js";
 import User from "../dao/models/user.model.js";
+import CartService from "../dao/services/db/cart.service.js";
+import Cart from "../dao/models/cart.model.js";
 
 const userService = new UserService(User);
+const cartService = new CartService(Cart);
 
 const initializePassport = () => {
   passport.use('github', new GithubStrategy({
@@ -15,6 +18,11 @@ const initializePassport = () => {
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const user = await userService.getUserByEmail(profile._json.email);
+      if (!user.cart) {
+        const cart = await cartService.addCart({});
+        await userService.addCartToUser(user.email, cart._id);
+        user.cart = cart._id;
+      }
       return done(null, user);
     } catch (error) {
       try {
@@ -25,6 +33,9 @@ const initializePassport = () => {
           password: ''
         }
         const result = await userService.createUser(userFields);
+        const cart = await cartService.addCart({});
+        await userService.addCartToUser(user.email, cart._id);
+        result.cart = cart._id;
         return done(null, result);
       } catch (error) {
         return done(error);
@@ -49,6 +60,9 @@ const initializePassport = () => {
     };
     try {
       const user = await userService.createUser(userFields);
+      const cart = await cartService.addCart({});
+      await userService.addCartToUser(user.email, cart._id);
+      user.cart = cart._id;
       return done(null, user);
     } catch (error) {
       return done(error);
@@ -67,6 +81,11 @@ const initializePassport = () => {
       const isValid = await isValidPassword(user, password);
       if (!isValid) {
         return done(null, false);
+      }
+      if (!user.cart) {
+        const cart = await cartService.addCart({});
+        await userService.addCartToUser(user.email, cart._id);
+        user.cart = cart._id;
       }
       return done(null, user);
     } catch (error) {
