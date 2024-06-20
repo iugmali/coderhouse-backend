@@ -24,6 +24,7 @@
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "vitest": "^1.4.0"
   }
 }

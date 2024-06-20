@@ -4,6 +4,8 @@ import {BadRequestError, NotFoundError} from "./exceptions/errors.js";
 import bcrypt from "bcrypt";
 import {randomUUID} from "crypto";
 
+import {faker} from "@faker-js/faker/locale/pt_BR";
+
 export const isProfane = (word) => {
   const profanity = new ProfanityService();
   return profanity.isProfane(word);
@@ -26,6 +28,25 @@ export const createHash = (password) => {
 
 export const generateCode = () => {
   return randomUUID();
+}
+
+export const generateFakeProduct = () => {
+  return {
+    _id: faker.database.mongodbObjectId(),
+    title: faker.commerce.productName(),
+    description: faker.commerce.productDescription(),
+    code: faker.commerce.isbn(),
+    price: parseFloat(faker.commerce.price({
+      min: 10000,
+      max: 100000
+    }))/100,
+    status: faker.datatype.boolean(),
+    stock: faker.number.int(),
+    category: faker.commerce.department(),
+    thumbnails: [faker.image.url()],
+    createdAt: faker.date.recent(),
+    __v: 0
+  };
 }
 
 export const isValidPassword = async (user, password) => {

@@ -1,30 +1,10 @@
 import {Router} from "express";
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import ProductController from '../controllers/product.controller.js';
-import PersistenceService from "../dao/services/filesystem/persistence.service.js";
-import ProductServiceFs from "../dao/services/filesystem/product.service.js";
-import ProductServiceDb from "../dao/services/db/product.service.js";
-import CartController from "../controllers/cart.controller.js";
-import CartServiceFs from "../dao/services/filesystem/cart.service.js";
-import CartServiceDb from "../dao/services/db/cart.service.js";
-import productModel from "../dao/models/product.model.js";
 import chatService from "../lib/services/chat.service.js";
 import {handleProductQueries} from "../lib/util.js";
-import cartModel from "../dao/models/cart.model.js";
 import {checkAuth, checkAuthJson} from "../middleware/auth.js";
+import {productController} from "../factory/product.factory.js";
+import {cartController} from "../factory/cart.factory.js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const productService = process.env.PERSIST_MODE === 'filesystem'
-  ? new ProductServiceFs(new PersistenceService(join(__dirname, '..', '..', 'data/products.json')))
-  : new ProductServiceDb(productModel);
-const productController = new ProductController(productService);
-
-const cartService = process.env.PERSIST_MODE === 'filesystem'
-  ? new CartServiceFs(new PersistenceService(join(__dirname, '..', '..', 'data/carts.json')))
-  : new CartServiceDb(cartModel);
-const cartController = new CartController(cartService);
 
 const router = Router();
 

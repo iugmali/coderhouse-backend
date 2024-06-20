@@ -14,6 +14,14 @@ class TicketService {
       throw new InternalServerError(e.message);
     }
   }
+
+  getTicketByCode = async (code) => {
+    try {
+      return await this.model.findOne({code});
+    } catch (e) {
+      throw new InternalServerError(e.message);
+    }
+  }
 }
 
 export default TicketService;

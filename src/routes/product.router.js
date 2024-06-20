@@ -1,21 +1,8 @@
 import {Router} from 'express';
 
-import {fileURLToPath} from 'node:url';
-import {dirname, join} from 'node:path';
-import ProductController from '../controllers/product.controller.js';
-import PersistenceService from "../dao/services/filesystem/persistence.service.js";
-import ProductServiceFs from "../dao/services/filesystem/product.service.js";
-import ProductServiceDb from "../dao/services/db/product.service.js";
-import productModel from "../dao/models/product.model.js";
 import {handleProductQueries} from "../lib/util.js";
 import {checkAdminJson} from "../middleware/auth.js";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const productService = process.env.PERSIST_MODE === 'filesystem'
-  ? new ProductServiceFs(new PersistenceService(join(__dirname, '..', '..', 'data/products.json')))
-  : new ProductServiceDb(productModel);
-const productController = new ProductController(productService);
+import {productController} from "../factory/product.factory.js";
 
 const router = Router();
 

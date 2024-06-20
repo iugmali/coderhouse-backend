@@ -2,13 +2,9 @@ import passport from 'passport';
 import {Strategy as GithubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
 import { isValidPassword, createHash } from '../lib/util.js';
-import UserService from "../dao/services/db/user.service.js";
-import User from "../dao/models/user.model.js";
-import CartService from "../dao/services/db/cart.service.js";
-import Cart from "../dao/models/cart.model.js";
+import {cartService} from "../factory/cart.factory.js";
+import {userService} from "../factory/user.factory.js";
 
-const userService = new UserService(User);
-const cartService = new CartService(Cart);
 
 const initializePassport = () => {
   passport.use('github', new GithubStrategy({

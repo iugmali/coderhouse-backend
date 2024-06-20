@@ -1,13 +1,9 @@
 import {InternalServerError, NotFoundError} from "../../../lib/exceptions/errors.js";
 import mongoose from "mongoose";
-import productModel from "../../models/product.model.js";
-import ProductService from "./product.service.js";
-import TicketService from "./ticket.service.js";
 import {generateCode, handleNotFoundError, handleValidationErrors} from "../../../lib/util.js";
-import ticketModel from "../../models/ticket.model.js";
+import {productService} from "../../../factory/product.factory.js";
+import {ticketService} from "../../../factory/ticket.factory.js";
 
-const productService = new ProductService(productModel);
-const ticketService = new TicketService(ticketModel);
 
 class CartService {
   constructor(model) {

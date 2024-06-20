@@ -16,6 +16,7 @@ import socketServer from "./lib/socket.js";
 import initializePassport from "./config/passport.config.js";
 import {sessionConfig} from "./config/session.config.js";
 import {MONGODB_CONNECTION} from "./config/config.js";
+import {generateFakeProduct} from "./lib/util.js";
 
 mongoose.connect(MONGODB_CONNECTION, {dbName: 'ecommerce'})
   .catch((error)=>{
@@ -49,6 +50,14 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
+
+app.get('/mockingproducts', (req, res) => {
+  const products = [];
+  for (let i = 0; i < 100; i++) {
+    products.push(generateFakeProduct());
+  }
+  res.json(products);
+})
 
 app.use('/', sessionRouter);
 app.use('/', viewRouter);

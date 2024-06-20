@@ -4,6 +4,9 @@
 @ProductId= 6628fd902fb730e28bbbe701
 @CartId= 6671eeba0301d449ca7d7e63
 
+### ReturnFakeProducts
+GET {{HostAddress}}/mockingproducts
+
 ### LoginAsAdmin
 POST {{HostAddress}}/login
 Content-Type: application/json
