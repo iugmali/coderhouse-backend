@@ -15,14 +15,17 @@ import mongoose from "mongoose";
 import socketServer from "./lib/socket.js";
 import initializePassport from "./config/passport.config.js";
 import {sessionConfig} from "./config/session.config.js";
-import {MONGODB_CONNECTION} from "./config/config.js";
+import {MONGODB_CONNECTION, PERSIST_MODE} from "./config/config.js";
 import {generateFakeProduct} from "./lib/util.js";
+import {logger} from "./middleware/logger.js";
 
-mongoose.connect(MONGODB_CONNECTION, {dbName: 'ecommerce'})
-  .catch((error)=>{
-    console.error('Error connecting to the database: '+ error);
-    process.exit();
-  });
+if (PERSIST_MODE !== 'filesystem') {
+  mongoose.connect(MONGODB_CONNECTION, {dbName: 'ecommerce'})
+    .catch((error)=>{
+      console.error('Error connecting to the database: '+ error);
+      process.exit();
+    });
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -49,6 +52,18 @@ app.use(passport.session());
 app.use((req, res, next) => {
   req.io = io;
   next();
+});
+
+app.use(logger);
+
+app.get('/loggerTest', (req, res) => {
+  req.logger.debug('Debug message');
+  req.logger.http('http message');
+  req.logger.info('Info message');
+  req.logger.warning('warning message');
+  req.logger.error('Error message');
+  req.logger.fatal('Fatal message');
+  res.send('Logger test route');
 });
 
 app.get('/mockingproducts', (req, res) => {

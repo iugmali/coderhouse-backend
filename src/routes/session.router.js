@@ -13,6 +13,7 @@ router.post('/signup', passport.authenticate('signup', {
 }));
 
 router.get('/signupfail', (req, res) => {
+  req.logger.warning('Falha no registro');
   res.send({ error: 'Falha no registro' });
 });
 
@@ -21,6 +22,7 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/loginfail', (req, res) => {
+  req.logger.warning('Falha no login');
   res.send({ error: 'Falha no login' });
 });
 
