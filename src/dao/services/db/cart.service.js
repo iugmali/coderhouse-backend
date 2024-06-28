@@ -1,6 +1,11 @@
 import {InternalServerError, NotFoundError} from "../../../lib/exceptions/errors.js";
 import mongoose from "mongoose";
-import {generateCode, handleNotFoundError, handleValidationErrors} from "../../../lib/util.js";
+import {
+  generateCode,
+  handleNotFoundError,
+  handleValidationErrors,
+  throwErrorWhenMongooseNotFound
+} from "../../../lib/util.js";
 import {productService} from "../../../factory/product.factory.js";
 import {ticketService} from "../../../factory/ticket.factory.js";
 
@@ -22,13 +27,11 @@ class CartService {
   updateCart = async (id, cart) => {
     try {
       const cartToUpdate = await this.model.findById(id);
-      if (!cartToUpdate) {
-        throw new mongoose.Error.DocumentNotFoundError('Carrinho não encontrado.');
-      }
+      throwErrorWhenMongooseNotFound(cartToUpdate, 'Carrinho não encontrado.');
       cartToUpdate.products = cart.products;
       return await cartToUpdate.save();
     } catch (e) {
-      handleNotFoundError(e);
+      handleNotFoundError(e, 'Carrinho não encontrado.');
       throw new InternalServerError(e.message);
     }
   }
@@ -36,30 +39,18 @@ class CartService {
   getCartById = async (id) => {
     try {
       const cart = await this.model.findById(id).populate('products.product').lean();
-      if (!cart) {
-        throw new mongoose.Error.DocumentNotFoundError('Carrinho não encontrado.');
-      }
+      throwErrorWhenMongooseNotFound(cart, 'Carrinho não encontrado.');
       return cart;
     } catch (e) {
-      handleNotFoundError(e);
+      handleNotFoundError(e, 'Carrinho não encontrado.');
       throw new InternalServerError(e.message);
     }
   };
 
   addProductToCart = async (id, enteredProduct) => {
-    // catching cart not found
-    try {
-      await this.model.findById(id);
-    } catch (e) {
-      handleNotFoundError(e);
-      throw new InternalServerError(e.message);
-    }
-    // catching product not found
     try {
       const cart = await this.model.findById(id);
-      if (!cart) {
-        throw new mongoose.Error.DocumentNotFoundError('Carrinho não encontrado.');
-      }
+      throwErrorWhenMongooseNotFound(cart, 'Carrinho não encontrado.');
       const product = await productService.getProductById(enteredProduct.product);
       let pIndex;
       const existingProduct = cart.products.find((p, i) => {
@@ -73,21 +64,15 @@ class CartService {
       }
       return await cart.save();
     } catch (e) {
-      throw e;
+      handleNotFoundError(e, 'Carrinho não encontrado.');
+      throw new InternalServerError(e.message);
     }
   }
 
   setProductQuantity = async (id, productId, quantity) => {
-    // catching cart not found
-    try {
-      await this.model.findById(id);
-    } catch (e) {
-      handleNotFoundError(e);
-      throw new InternalServerError(e.message);
-    }
-    // catching product not found
     try {
       const cart = await this.model.findById(id);
+      throwErrorWhenMongooseNotFound(cart, 'Carrinho não encontrado.');
       const product = await productService.getProductById(productId);
       let pIndex;
       const existingProduct = cart.products.find((p, i) => {
@@ -99,10 +84,7 @@ class CartService {
       }
       return await cart.save();
     } catch (e) {
-      if (e instanceof NotFoundError) {
-        throw e;
-      }
-      handleNotFoundError(e);
+      handleNotFoundError(e, 'Carrinho não encontrado.');
       throw new InternalServerError(e.message);
     }
   }
@@ -135,7 +117,7 @@ class CartService {
         ticket
       };
     } catch (e) {
-      handleNotFoundError(e);
+      handleNotFoundError(e, 'Carrinho não encontrado.');
       throw new InternalServerError(e.message);
     }
   }
@@ -143,10 +125,11 @@ class CartService {
   removeProductsFromCart = async (id) => {
     try {
       const cart = await this.model.findById(id);
+      throwErrorWhenMongooseNotFound(cart, 'Carrinho não encontrado.');
       cart.products = [];
       return await cart.save();
     } catch (e) {
-      handleNotFoundError(e);
+      handleNotFoundError(e, 'Carrinho não encontrado.');
       throw new InternalServerError(e.message);
     }
   }

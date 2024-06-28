@@ -1,6 +1,5 @@
-import {handleNotFoundError, handleUniqueIndexError} from "../../../lib/util.js";
+import {handleNotFoundError, handleUniqueIndexError, throwErrorWhenMongooseNotFound} from "../../../lib/util.js";
 import {InternalServerError} from "../../../lib/exceptions/errors.js";
-import mongoose from "mongoose";
 
 class UserService {
   constructor(model) {
@@ -19,12 +18,10 @@ class UserService {
   getUserByEmail = async (email) => {
     try {
       const user = await this.model.findOne({email});
-      if (!user) {
-        throw new mongoose.Error.DocumentNotFoundError('Usuário não encontrado.');
-      }
+      throwErrorWhenMongooseNotFound(user, 'Usuário não encontrado.');
       return user;
     } catch (e) {
-      handleNotFoundError(e);
+      handleNotFoundError(e, 'Usuário não encontrado.');
       throw new InternalServerError(e.message);
     }
   };
@@ -32,12 +29,10 @@ class UserService {
   getUserById = async (id) => {
     try {
       const user = await this.model.findById(id);
-      if (!user) {
-        throw new mongoose.Error.DocumentNotFoundError('Usuário não encontrado.');
-      }
+      throwErrorWhenMongooseNotFound(user, 'Usuário não encontrado.');
       return user;
     } catch (e) {
-      handleNotFoundError(e);
+      handleNotFoundError(e, 'Usuário não encontrado.');
       throw new InternalServerError(e.message);
     }
   };
@@ -45,9 +40,11 @@ class UserService {
   addCartToUser = async (email, cartId) => {
     try {
       const user = await this.getUserByEmail(email);
+      throwErrorWhenMongooseNotFound(user, 'Usuário não encontrado.');
       user.cart = cartId;
       return await user.save();
     } catch (e) {
+      handleNotFoundError(e, 'Usuário não encontrado.');
       throw new InternalServerError(e.message);
     }
   };

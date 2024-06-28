@@ -67,6 +67,13 @@ export const handleProductQueries = (queries) => {
   return { limit, page, query, sort };
 }
 
+
+export const throwErrorWhenMongooseNotFound = (item, message) => {
+  if (!item) {
+    throw new NotFoundError(message);
+  }
+}
+
 export const handleValidationErrors = (e) => {
   if (e instanceof mongoose.Error.ValidationError) {
     let errors = [];
@@ -77,9 +84,12 @@ export const handleValidationErrors = (e) => {
   }
 };
 
-export const handleNotFoundError = (e) => {
+export const handleNotFoundError = (e, message) => {
+  if (e instanceof NotFoundError) {
+    throw e;
+  }
   if (e instanceof mongoose.Error.DocumentNotFoundError || e instanceof mongoose.Error.CastError) {
-    throw new NotFoundError('Document not found.');
+    throw new NotFoundError(message);
   }
 };
 
