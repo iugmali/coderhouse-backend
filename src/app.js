@@ -12,11 +12,13 @@ import sessionRouter from "./routes/session.router.js";
 
 import { engine } from "express-handlebars";
 import mongoose from "mongoose";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+
 import socketServer from "./lib/socket.js";
 import initializePassport from "./config/passport.config.js";
 import {sessionConfig} from "./config/session.config.js";
 import {MONGODB_CONNECTION, PERSIST_MODE} from "./config/config.js";
-import {generateFakeProduct} from "./lib/util.js";
 import {logger} from "./middleware/logger.js";
 
 if (PERSIST_MODE !== 'filesystem') {
@@ -56,23 +58,20 @@ app.use((req, res, next) => {
 
 app.use(logger);
 
-app.get('/loggerTest', (req, res) => {
-  req.logger.debug('Debug message');
-  req.logger.http('http message');
-  req.logger.info('Info message');
-  req.logger.warning('warning message');
-  req.logger.error('Error message');
-  req.logger.fatal('Fatal message');
-  res.send('Logger test route');
-});
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: 'Coderstore API',
+      version: '1.0.0',
+      description: 'Products and carts API',
+    },
+  },
+  apis: [`./src/routes/*.js`],
+}
 
-app.get('/mockingproducts', (req, res) => {
-  const products = [];
-  for (let i = 0; i < 100; i++) {
-    products.push(generateFakeProduct());
-  }
-  res.json(products);
-})
+const specs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/', sessionRouter);
 app.use('/', viewRouter);
