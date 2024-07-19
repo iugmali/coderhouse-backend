@@ -6,6 +6,24 @@ import {productController} from "../factory/product.factory.js";
 
 const router = Router();
 
+/**
+ * @openapi
+ * /api/products/:
+ *   get:
+ *     summary: Retrieve all products
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: filter
+ *         schema:
+ *           type: string
+ *         description: Optional filter parameters
+ *     responses:
+ *       200:
+ *         description: A list of products
+ *       400:
+ *         description: Bad request
+ */
 router.get('/', async (req, res) => {
   try {
     const options = handleProductQueries(req.query);
@@ -17,6 +35,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/products/{pid}:
+ *   get:
+ *     summary: Retrieve a specific product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     responses:
+ *       200:
+ *         description: A single product
+ *       404:
+ *         description: Product not found
+ */
 router.get('/:pid', async (req, res) => {
   try {
     const product = await productController.getProduct(req.params.pid);
@@ -27,6 +64,18 @@ router.get('/:pid', async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/products/:
+ *   post:
+ *     summary: Add a new product
+ *     tags: [Products]
+ *     responses:
+ *       201:
+ *         description: Product created
+ *       400:
+ *         description: Bad request
+ */
 router.post('/', checkAdminJson, async (req, res) => {
   try {
     const product = await productController.addProduct(req.body);
@@ -38,6 +87,27 @@ router.post('/', checkAdminJson, async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/products/{pid}:
+ *   put:
+ *     summary: Update a specific product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     responses:
+ *       200:
+ *         description: Product updated
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Product not found
+ */
 router.put('/:pid', checkAdminJson, async (req, res) => {
   try {
     const product = await productController.updateProduct(req.params.pid, req.body);
@@ -49,6 +119,25 @@ router.put('/:pid', checkAdminJson, async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/products/{pid}:
+ *   delete:
+ *     summary: Delete a specific product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     responses:
+ *       204:
+ *         description: Product deleted
+ *       404:
+ *         description: Product not found
+ */
 router.delete('/:pid', checkAdminJson, async (req, res) => {
   try {
     await productController.deleteProduct(req.params.pid);
