@@ -2,7 +2,7 @@ import ProfanityService from "./services/profanity/profanity.service.js";
 import mongoose from "mongoose";
 import {BadRequestError, NotFoundError} from "./exceptions/errors.js";
 import bcrypt from "bcrypt";
-import {randomUUID} from "crypto";
+import crypto from "crypto";
 
 import {faker} from "@faker-js/faker/locale/pt_BR";
 
@@ -27,7 +27,7 @@ export const createHash = (password) => {
 };
 
 export const generateCode = () => {
-  return randomUUID();
+  return crypto.randomBytes(32).toString("hex");
 }
 
 export const generateFakeProduct = () => {

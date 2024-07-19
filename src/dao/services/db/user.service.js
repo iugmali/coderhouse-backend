@@ -48,6 +48,18 @@ class UserService {
       throw new InternalServerError(e.message);
     }
   };
+
+  redefinePassword = async (id, hash) => {
+    try {
+      const user = await this.getUserById(id);
+      throwErrorWhenMongooseNotFound(user, 'Usuário não encontrado.');
+      user.password = hash;
+      return await user.save();
+    } catch (e) {
+      handleNotFoundError(e, 'Usuário não encontrado.');
+      throw new InternalServerError(e.message);
+    }
+  };
 }
 
 export default UserService;
