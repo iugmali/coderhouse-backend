@@ -2,7 +2,8 @@
 #@HostAddress= http://localhost:8080
 
 @ProductId= 6628fd902fb730e28bbbe701
-@CartId= 6671eeba0301d449ca7d7e63
+@CartId= 66999f30497c127ec14b10c6
+@UserId= 6631808c2db12267e347951d
 
 ### ReturnFakeProducts
 GET {{HostAddress}}/mockingproducts
@@ -16,8 +17,20 @@ Content-Type: application/json
   "password": "adminCod3r123"
 }
 
+### LoginAsUser
+POST {{HostAddress}}/login
+Content-Type: application/json
+
+{
+  "email": "iugmali@gmail.com",
+  "password": "654321"
+}
+
 ### GetSession
 GET {{HostAddress}}/api/sessions/current
+
+### TogglePremium
+POST {{HostAddress}}/api/users/premium/{{UserId}}
 
 ### GetProducts
 GET {{HostAddress}}/api/products
@@ -54,12 +67,12 @@ POST {{HostAddress}}/api/products
 Content-Type: application/json
 
 {
-  "title": "Product 9",
-  "description": "Description for product 9",
-  "code": "p89i0",
-  "price": 199,
-  "stock": 20,
-  "category": "Category 2"
+  "title": "Laptop",
+  "description": "Outro produto",
+  "code": "p4409024",
+  "price": 299,
+  "stock": 35,
+  "category": "Outra"
 }
 
 ### UpdateProduct

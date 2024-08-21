@@ -1,4 +1,9 @@
-import {handleNotFoundError, handleUniqueIndexError, throwErrorWhenMongooseNotFound} from "../../../lib/util.js";
+import {
+  handleNotFoundError,
+  handleUniqueIndexError,
+  handleValidationErrors,
+  throwErrorWhenMongooseNotFound
+} from "../../../lib/util.js";
 import {InternalServerError} from "../../../lib/exceptions/errors.js";
 
 class UserService {
@@ -10,6 +15,7 @@ class UserService {
     try {
       return await this.model.create(user);
     } catch (e) {
+      handleValidationErrors(e);
       handleUniqueIndexError(e, 'Email já cadastrado.');
       throw new InternalServerError(e.message);
     }
@@ -49,17 +55,17 @@ class UserService {
     }
   };
 
-  redefinePassword = async (id, hash) => {
+  togglePremium = async (id) => {
     try {
-      const user = await this.getUserById(id);
+      const user = await this.model.findById(id);
       throwErrorWhenMongooseNotFound(user, 'Usuário não encontrado.');
-      user.password = hash;
+      user.role = user.role === 'premium' ? 'user' : 'premium';
       return await user.save();
     } catch (e) {
       handleNotFoundError(e, 'Usuário não encontrado.');
       throw new InternalServerError(e.message);
     }
-  };
+  }
 }
 
 export default UserService;

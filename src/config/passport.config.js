@@ -1,7 +1,7 @@
 import passport from 'passport';
 import {Strategy as GithubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
-import { isValidPassword, createHash } from '../lib/util.js';
+import { isValidHash, createHash } from '../lib/util.js';
 import {cartService} from "../factory/cart.factory.js";
 import {userService} from "../factory/user.factory.js";
 
@@ -74,7 +74,7 @@ const initializePassport = () => {
       if (!user) {
         return done(null, false);
       }
-      const isValid = await isValidPassword(user, password);
+      const isValid = await isValidHash(password, user.password);
       if (!isValid) {
         return done(null, false);
       }

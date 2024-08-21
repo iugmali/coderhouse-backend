@@ -1,4 +1,10 @@
 <main class="login-container">
+  {{> templates/nav}}
+  <div class="message">
+    {{#if message}}
+      <p class="heading">{{message}}</p>
+    {{/if}}
+  </div>
   <h1 class="heading">Entre em sua Conta</h1>
   <div class="login-form">
     <form action="/login" method="POST">

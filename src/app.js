@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { createServer } from 'node:http';
 
 import cartRouter from './routes/cart.router.js';
+import userRouter from './routes/user.router.js';
 import productRouter from './routes/product.router.js';
 import viewRouter from "./routes/view.router.js";
 import sessionRouter from "./routes/session.router.js";
@@ -75,6 +76,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/', sessionRouter);
 app.use('/', viewRouter);
+app.use('/api/users', userRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/products', productRouter);
 

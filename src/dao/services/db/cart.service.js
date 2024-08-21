@@ -122,6 +122,26 @@ class CartService {
     }
   }
 
+  removeProductFromCart = async (id, productId) => {
+    try {
+      const cart = await this.model.findById(id);
+      throwErrorWhenMongooseNotFound(cart, 'Carrinho não encontrado.');
+      const product = await productService.getProductById(productId);
+      let pIndex;
+      const existingProduct = cart.products.find((p, i) => {
+        pIndex = i;
+        return p.product.toString() === product._id.toString();
+      });
+      if (existingProduct) {
+        cart.products.splice(pIndex, 1);
+      }
+      return await cart.save();
+    } catch (e) {
+      handleNotFoundError(e, 'Carrinho não encontrado.');
+      throw new InternalServerError(e.message);
+    }
+  }
+
   removeProductsFromCart = async (id) => {
     try {
       const cart = await this.model.findById(id);

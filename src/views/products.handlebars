@@ -16,7 +16,7 @@
           <p>Preço: {{price}}</p>
           <p>Categoria: {{category}}</p>
           <p>Código: {{code}}</p>
-          <button class="button cart-button">{{> icons/cart}}</button>
+          <button class="button cart-button" data-cart="{{../user.cart}}" data-product="{{_id}}">{{> icons/cart}}</button>
         </div>
       {{/each}}
     </div>

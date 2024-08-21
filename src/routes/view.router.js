@@ -2,8 +2,8 @@ import {Router} from "express";
 import chatService from "../lib/services/chat.service.js";
 import {handleProductQueries} from "../lib/util.js";
 import {checkAuth, checkAuthJson} from "../middleware/auth.js";
-import {productController} from "../factory/product.factory.js";
-import {cartController} from "../factory/cart.factory.js";
+import {productService} from "../factory/product.factory.js";
+import {cartService} from "../factory/cart.factory.js";
 
 
 const router = Router();
@@ -13,18 +13,18 @@ let realTimeProductsListenersAttached = false;
 let chatListenersAttached = false;
 
 router.get('/', async (req, res) => {
-  res.render('home', {title: 'Coderhouse Backend'});
+  res.render('home', {user: req.session.user, title: 'Coderhouse Backend'});
 });
 
 router.get('/products', checkAuth, async (req, res) => {
   const options = handleProductQueries(req.query);
-  const result = await productController.getProducts(options);
+  const result = await productService.getProducts(options);
   const products = result.payload;
   res.render('products', {title: 'Produtos', user: req.session.user, noProducts: products.length === 0, products, page: result.page, prevLink: result.prevLink, nextLink: result.nextLink});
 });
 
-router.get('/carts/:cid', checkAuth, async (req, res) => {
-  const cart = await cartController.getCart(req.params.cid);
+router.get('/cart', checkAuth, async (req, res) => {
+  const cart = await cartService.getCartById(req.session.user.cart);
   res.render('cart', {title: 'Carrinho', user: req.session.user, noProducts: cart.products.length === 0, products: cart.products});
 });
 
@@ -32,7 +32,7 @@ router.get('/realtimeproducts', checkAuth, async (req, res) => {
   const options = handleProductQueries(req.query);
   if (!realTimeProductsListenersAttached) {
     req.io.on('connection', async (socket) => {
-      req.io.to(socket.id).emit('products', (await productController.getProducts(options)).payload);
+      req.io.to(socket.id).emit('products', (await productService.getProducts(options)).payload);
     });
     realTimeProductsListenersAttached = true;
   }
@@ -44,7 +44,7 @@ router.get('/chat', checkAuth, (req, res) => {
     chatService.attachListeners(req.io);
     chatListenersAttached = true;
   }
-  res.render('chat', {title: 'chat'});
+  res.render('chat', {user: req.session.user, title: 'chat'});
 });
 
 router.post('/chat/usercheck', checkAuthJson, (req, res) => {

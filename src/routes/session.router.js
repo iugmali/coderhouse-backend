@@ -1,21 +1,25 @@
 import { Router } from 'express';
 import passport from "passport";
-import {sendPasswordResetEmail} from "../lib/services/mail.service.js";
+import {sendPasswordChangedEmail, sendPasswordResetEmail} from "../lib/services/mail.service.js";
 import {userService} from "../factory/user.factory.js";
 import TokenModel from "../dao/models/token.model.js";
-import {createHash, generateCode} from "../lib/util.js";
+import {createHash, generateCode, isValidHash} from "../lib/util.js";
 import {BASE_URL} from "../config/config.js";
 
 const router = Router();
 
 router.get('/signup', (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/products');
+  }
   res.render('signup');
 });
 
 router.post('/signup', passport.authenticate('signup', {
-  successRedirect: '/login',
   failureRedirect: '/signupfail'
-}));
+}), (req, res) => {
+  res.redirect('/login')
+});
 
 router.get('/signupfail', (req, res) => {
   req.logger.warning('Falha no registro');
@@ -23,12 +27,15 @@ router.get('/signupfail', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
+  if (req.session.user) {
+    return res.redirect('/products');
+  }
   res.render('login');
 });
 
 router.get('/loginfail', (req, res) => {
   req.logger.warning('Falha no login');
-  res.send({ error: 'Falha no login' });
+  res.render('login', {message: 'Credenciais inválidas'});
 });
 
 router.post('/login', passport.authenticate('login', {
@@ -86,26 +93,57 @@ router.post('/forgot-password', async (req, res) => {
       token: hash,
       createdAt: Date.now(),
     });
-    const link = `${BASE_URL}/passwordReset?token=${resetToken}&id=${user._id}`;
+    const link = `${BASE_URL}/reset-password?token=${resetToken}&id=${user._id}`;
     await sendPasswordResetEmail(user.email, link);
-    res.render('forgot-password-sent');
+    res.render('forgot-password', {message: 'Email para redefinição de senha enviado com sucesso'});
   } catch (e) {
     req.logger.error(e.message);
-    res.render('forgot-password-sent');
+    res.render('forgot-password', {message: 'Email não encontrado em nossa base de dados'});
   }
 });
 
-router.get('/reset-password', (req, res) => {
+router.get('/reset-password', async (req, res) => {
   const { token, id } = req.query;
+  const userToken = await TokenModel.findOne({ userId: id });
+  if (!userToken) {
+    res.render('forgot-password', {message: 'Token inválido ou expirado. Digite seu e-mail para receber um novo token.'});
+    return;
+  }
+  const isValid = await isValidHash(token, userToken.token);
+  if (!isValid) {
+    res.render('forgot-password', {message: 'Token inválido ou expirado. Digite seu e-mail para receber um novo token.'});
+    return;
+  }
   res.render('reset-password', { token, id });
 });
 
 router.post('/reset-password', async (req, res) => {
   const {token, id, password} = req.body;
   try {
+    const userToken = await TokenModel.findOne({ userId: id });
+    if (!userToken) {
+      res.render('forgot-password', {message: 'Token inválido ou expirado. Digite seu e-mail para receber um novo token.'});
+      return;
+    }
+    const isValid = await isValidHash(token, userToken.token);
+    if (!isValid) {
+      res.render('forgot-password', {message: 'Token inválido ou expirado. Digite seu e-mail para receber um novo token.'});
+      return;
+    }
     const user = await userService.getUserById(id);
+    const isSamePassword = await isValidHash(password, user.password);
+    if (isSamePassword) {
+      res.render('reset-password', { token, id, message: 'Senha não pode ser igual a anterior. Digite uma nova senha.' });
+      return;
+    }
+    const hash = createHash(password);
+    user.password = hash;
+    await user.save();
+    await sendPasswordChangedEmail(user.email);
+    await userToken.deleteOne();
+    res.render('login', {message: 'Senha alterada com sucesso. Faça login com a nova senha.'});
   } catch (e) {
-    res.status(e.status).json({message: e.message});
+    res.status(500).json({message: e.message});
   }
 });
 

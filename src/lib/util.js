@@ -49,8 +49,8 @@ export const generateFakeProduct = () => {
   };
 }
 
-export const isValidPassword = async (user, password) => {
-  return bcrypt.compareSync(password, user.password);
+export const isValidHash = async (string ,hash) => {
+  return bcrypt.compareSync(string, hash);
 }
 
 export const handleProductQueries = (queries) => {
@@ -58,10 +58,10 @@ export const handleProductQueries = (queries) => {
   let page = +queries.page;
   let query = queries.query;
   let sort = queries.sort;
-  if (!limit || limit < 0) {
+  if (!limit || limit < 1) {
     limit = 10;
   }
-  if (!page || page < 0) {
+  if (!page || page < 1) {
     page = 1;
   }
   return { limit, page, query, sort };

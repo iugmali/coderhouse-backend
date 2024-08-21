@@ -16,3 +16,20 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
     throw e;
   }
 }
+
+export const sendPasswordChangedEmail = async (email) => {
+  const msg = {
+    to: email,
+    from: 'noreply@iugmali.com', // Use the email address or domain you verified above
+    subject: 'CoderStore - Senha alterada com sucesso',
+    text: `A sua senha foi alterada com sucesso.`,
+    html: `<p>A sua senha foi alterada com sucesso.</p>`,
+  };
+  try {
+    await sgMail.send(msg);
+  } catch (e) {
+    e.statusCode = 500;
+    e.message = 'Erro ao enviar email';
+    throw e;
+  }
+}
