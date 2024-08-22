@@ -22,6 +22,13 @@ const userSchema = new mongoose.Schema({
     default: 'user',
   },
   password: String,
+  documents: [
+    {
+      name: String,
+      reference: String
+    },
+  ],
+  last_connection: Date,
 });
 
 export default mongoose.model('users', userSchema);

@@ -27,6 +27,7 @@ GITHUB_LOGIN_CLIENT_ID=
 GITHUB_LOGIN_CLIENT_SECRET=
 GITHUB_LOGIN_CALLBACK_URL=
 SENDGRID_API_KEY=
+SENDGRID_FROM_EMAIL=
 ```
 - `BASE_URL` é a URL base do projeto, por exemplo, `BASE_URL="http://localhost:8080"`.
 - `PERSIST_MODE="filesystem"` para persistir os datos de produtos e carts em arquivos, ou `PERSIST_MODE="mongodb"` para persistir em um banco de dados MongoDB.
@@ -34,6 +35,7 @@ SENDGRID_API_KEY=
 - `AUTH_SECRET` é a chave secreta para a sessão de usuários. Execute o comando `openssl rand -base64 32` para gerar uma chave secreta.
 - `GITHUB_LOGIN_CLIENT_ID`, `GITHUB_LOGIN_CLIENT_SECRET` e `GITHUB_LOGIN_CALLBACK_URL` são as credenciais e a rota de callback para autenticação via GitHub.
 - `SENDGRID_API_KEY` é a chave da api do Sendgrid para envio de emails
+- `SENDGRID_FROM_EMAIL` é o email de origem para envio de emails já registrado no sendgrid
 
 ## Execução
 

@@ -4,6 +4,7 @@ import {handleProductQueries} from "../lib/util.js";
 import {checkAuth, checkAuthJson} from "../middleware/auth.js";
 import {productService} from "../factory/product.factory.js";
 import {cartService} from "../factory/cart.factory.js";
+import {userService} from "../factory/user.factory.js";
 
 
 const router = Router();
@@ -27,6 +28,13 @@ router.get('/cart', checkAuth, async (req, res) => {
   const cart = await cartService.getCartById(req.session.user.cart);
   res.render('cart', {title: 'Carrinho', user: req.session.user, noProducts: cart.products.length === 0, products: cart.products});
 });
+
+router.get('/profile', checkAuth, async (req, res) => {
+  const documents = await userService.getDocuments(req.session.user.id);
+  console.log(documents)
+  const last_connection = (new Date(req.session.user.last_connection)).toLocaleString('pt-BR');
+  res.render('profile', {title: 'Perfil', noDocuments: documents.length === 0, documents: documents.length, user: req.session.user, last_connection})
+})
 
 router.get('/realtimeproducts', checkAuth, async (req, res) => {
   const options = handleProductQueries(req.query);

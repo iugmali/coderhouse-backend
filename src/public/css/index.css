@@ -20,6 +20,10 @@ main {
     padding-right: 1rem;
 }
 
+input[type="file"] {
+    display: none;
+}
+
 .container {
     display: grid;
     grid-template-columns: 1fr;

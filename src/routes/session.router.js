@@ -16,14 +16,13 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', passport.authenticate('signup', {
+  successRedirect: '/login',
   failureRedirect: '/signupfail'
-}), (req, res) => {
-  res.redirect('/login')
-});
+}));
 
 router.get('/signupfail', (req, res) => {
   req.logger.warning('Falha no registro');
-  res.send({ error: 'Falha no registro' });
+  res.render('signup', {message: 'Dados inválidos ou email já existe'});
 });
 
 router.get('/login', (req, res) => {
@@ -43,10 +42,12 @@ router.post('/login', passport.authenticate('login', {
 }), async (req, res) => {
   if (!req.user) return res.status(400).json({error: 'Credenciais invalidas'});
   req.session.user = {
+    id: req.user._id.toString(),
     first_name: req.user.first_name,
     email: req.user.email,
     role: req.user.role,
-    cart: req.user.cart
+    cart: req.user.cart,
+    last_connection: req.user.last_connection,
   };
   res.redirect('/products');
 });
@@ -56,10 +57,12 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }),
   async (req, res) => {
     req.session.user = {
+      id: req.user._id.toString(),
       first_name: req.user.first_name,
       email: req.user.email,
       role: req.user.role,
-      cart: req.user.cart
+      cart: req.user.cart,
+      last_connection: req.user.last_connection,
     };
     res.redirect('/products');
 });
@@ -81,9 +84,6 @@ router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   try {
     const user = await userService.getUserByEmail(email);
-    if (!user) {
-      return res.render('forgot-password-sent');
-    }
     const token = await TokenModel.findOne({ userId: user._id });
     if (token) await token.deleteOne();
     const resetToken = generateCode();

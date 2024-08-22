@@ -14,6 +14,8 @@ const initializePassport = () => {
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const user = await userService.getUserByEmail(profile._json.email);
+      user.last_connection = Date.now();
+      await user.save();
       if (!user.cart) {
         const cart = await cartService.addCart({});
         await userService.addCartToUser(user.email, cart._id);
@@ -26,7 +28,8 @@ const initializePassport = () => {
           first_name: profile._json.name,
           email: profile._json.email,
           role: 'user',
-          password: ''
+          password: '',
+          last_connection: Date.now()
         }
         const result = await userService.createUser(userFields);
         const cart = await cartService.addCart({});
@@ -34,7 +37,7 @@ const initializePassport = () => {
         result.cart = cart._id;
         return done(null, result);
       } catch (error) {
-        return done(error);
+        return done(null, false);
       }
     }
   }));
@@ -61,7 +64,7 @@ const initializePassport = () => {
       user.cart = cart._id;
       return done(null, user);
     } catch (error) {
-      return done(error);
+      return done(null, false);
     }
   }));
 
@@ -83,9 +86,11 @@ const initializePassport = () => {
         await userService.addCartToUser(user.email, cart._id);
         user.cart = cart._id;
       }
+      user.last_connection = Date.now();
+      await user.save();
       return done(null, user);
     } catch (error) {
-      return done(error);
+      return done(null, false);
     }
   }));
 

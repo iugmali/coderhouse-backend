@@ -16,7 +16,9 @@
           <p>Preço: {{price}}</p>
           <p>Categoria: {{category}}</p>
           <p>Código: {{code}}</p>
-          <button class="button cart-button" data-cart="{{../user.cart}}" data-product="{{_id}}">{{> icons/cart}}</button>
+          {{#ifCond ../user.email '!==' owner}}
+            <button class="button cart-button" data-cart="{{../user.cart}}" data-product="{{_id}}">{{> icons/cart}}</button>
+          {{/ifCond}}
         </div>
       {{/each}}
     </div>

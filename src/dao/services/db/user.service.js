@@ -4,7 +4,7 @@ import {
   handleValidationErrors,
   throwErrorWhenMongooseNotFound
 } from "../../../lib/util.js";
-import {InternalServerError} from "../../../lib/exceptions/errors.js";
+import {BadRequestError, InternalServerError} from "../../../lib/exceptions/errors.js";
 
 class UserService {
   constructor(model) {
@@ -43,6 +43,27 @@ class UserService {
     }
   };
 
+  getDocuments = async (id) => {
+    try {
+      const user = await this.getUserById(id);
+      return user.documents || [];
+    } catch (e) {
+      handleNotFoundError(e, 'Usuário não encontrado.');
+      throw new InternalServerError(e.message);
+    }
+  }
+
+  addDocument = async (id, document) => {
+    try {
+      const user = await this.getUserById(id);
+      user.documents.push(document);
+      return await user.save();
+    } catch (e) {
+      handleNotFoundError(e, 'Usuário não encontrado.');
+      throw new InternalServerError(e.message);
+    }
+  }
+
   addCartToUser = async (email, cartId) => {
     try {
       const user = await this.getUserByEmail(email);
@@ -59,7 +80,17 @@ class UserService {
     try {
       const user = await this.model.findById(id);
       throwErrorWhenMongooseNotFound(user, 'Usuário não encontrado.');
-      user.role = user.role === 'premium' ? 'user' : 'premium';
+      if (user.role === 'admin') {
+        return user;
+      }
+      if (user.role === 'user') {
+        if (user.documents.length < 3) {
+          throw new BadRequestError('Usuário deve ter pelo menos 3 documentos para se tornar premium.');
+        }
+        user.role = 'premium';
+      } else {
+        user.role = 'user';
+      }
       return await user.save();
     } catch (e) {
       handleNotFoundError(e, 'Usuário não encontrado.');

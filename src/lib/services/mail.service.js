@@ -1,9 +1,9 @@
-import sgMail from '../../config/mail.config.js';
+import sgMail, {sendGridFromEmail} from '../../config/mail.config.js';
 
 export const sendPasswordResetEmail = async (email, resetLink) => {
   const msg = {
     to: email,
-    from: 'noreply@iugmali.com', // Use the email address or domain you verified above
+    from: sendGridFromEmail,
     subject: 'CoderStore - Redefinir Senha',
     text: `Copie o link e cole na barra de endereço do seu navegador: ${resetLink}`,
     html: `<p>Clique no link abaixo para redefinir a sua senha</p><a href="${resetLink}">Redefinir senha</a>`,
@@ -20,7 +20,7 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
 export const sendPasswordChangedEmail = async (email) => {
   const msg = {
     to: email,
-    from: 'noreply@iugmali.com', // Use the email address or domain you verified above
+    from: sendGridFromEmail,
     subject: 'CoderStore - Senha alterada com sucesso',
     text: `A sua senha foi alterada com sucesso.`,
     html: `<p>A sua senha foi alterada com sucesso.</p>`,
