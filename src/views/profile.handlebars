@@ -1,0 +1,33 @@
+<main>
+ {{> templates/nav}}
+  <section class="login-container">
+    <div class="message">
+      {{#if message}}
+        <p class="heading">{{message}}</p>
+      {{/if}}
+    </div>
+    <h1 class="heading">{{user.email}}</h1>
+    <h1 class="heading">{{user.role}}</h1>
+    <p>Último login: {{last_connection}}</p>
+    {{#if noDocuments}}
+      <p>Não existem documentos registrados. Para fazer o upgrade para premium é necessário pelo menos 3 documentos registrados.</p>
+    {{else}}
+      <p>{{documents}} documentos registrados.</p>
+    {{/if}}
+    <form action="/api/users/{{user.id}}/documents" method="POST" enctype="multipart/form-data">
+      <label for="files" class="button">Carregar documentos</label>
+      <input type="file" name="files" id="files" multiple>
+      <button type="submit" class="button">Enviar Documentos</button>
+    </form>
+    {{#ifCond user.role '===' 'user'}}
+      <form action="/api/users/premium/{{user.id}}" method="POST">
+        <button type="submit" class="button">Upgrade para Premium</button>
+      </form>
+    {{/ifCond}}
+    {{#ifCond user.role '===' 'premium'}}
+      <form action="/api/users/premium/{{user.id}}" method="POST">
+        <button type="submit" class="button">Deixar de ser Premium</button>
+      </form>
+    {{/ifCond}}
+  </section>
+</main>

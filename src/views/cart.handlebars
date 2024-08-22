@@ -1,11 +1,8 @@
 <main>
-  <nav class="navbar">
-    <span>email: {{user.email}}, role: {{user.role}}</span>
-    <a href="/logout" class="button">Sair</a>
-  </nav>
+  {{> templates/nav}}
   <h1 class="heading">Carrinho</h1>
   {{#if noProducts}}
-    <p class="text-center mt1rem">Nenhum produto encontrado</p>
+    <p class="text-center mt1rem">Nenhum produto no carrinho</p>
   {{else}}
     <div class="container mt1rem">
       {{#each products}}
@@ -16,8 +13,10 @@
           <p>Categoria: {{product.category}}</p>
           <p>Código: {{product.code}}</p>
           <p>Quantidade: {{quantity}}</p>
+          <button class="button remove-button" data-cart="{{../user.cart}}" data-product="{{product._id}}">{{> icons/delete}}</button>
         </div>
       {{/each}}
     </div>
   {{/if}}
 </main>
+<script src="js/cart.js" defer></script>

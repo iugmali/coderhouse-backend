@@ -1,70 +1,107 @@
 import {Router} from 'express';
 
-import {fileURLToPath} from 'node:url';
-import {dirname, join} from 'node:path';
-import ProductController from '../controllers/product.controller.js';
-import PersistenceService from "../dao/services/filesystem/persistence.service.js";
-import ProductServiceFs from "../dao/services/filesystem/product.service.js";
-import ProductServiceDb from "../dao/services/db/product.service.js";
-import productModel from "../dao/models/product.model.js";
-import {handleProductQueries} from "../lib/util.js";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const productService = process.env.PERSIST_MODE === 'filesystem'
-  ? new ProductServiceFs(new PersistenceService(join(__dirname, '..', '..', 'data/products.json')))
-  : new ProductServiceDb(productModel);
-const productController = new ProductController(productService);
+import {checkAdminJson, checkAdminOrPremiumJson} from "../middleware/auth.js";
+import {productController} from "../factory/product.factory.js";
 
 const router = Router();
 
-router.get('/', async (req, res) => {
-  try {
-    const options = handleProductQueries(req.query);
-    const result = await productController.getProducts(options);
-    res.json(result);
-  } catch (e) {
-    res.status(e.statusCode).json({message: e.message});
-  }
-});
+/**
+ * @openapi
+ * /api/products/:
+ *   get:
+ *     summary: Retrieve all products
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         schema:
+ *           type: string
+ *         description: Search query
+ *     responses:
+ *       200:
+ *         description: A list of products
+ *       400:
+ *         description: Bad request
+ */
+router.get('/', productController.getProducts);
 
-router.get('/:pid', async (req, res) => {
-  try {
-    const product = await productController.getProduct(req.params.pid);
-    res.json(product);
-  } catch (e) {
-    res.status(e.statusCode).json({message: e.message});
-  }
-});
+/**
+ * @openapi
+ * /api/products/{pid}:
+ *   get:
+ *     summary: Retrieve a specific product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     responses:
+ *       200:
+ *         description: A single product
+ *       404:
+ *         description: Product not found
+ */
+router.get('/:pid', productController.getProduct);
 
-router.post('/', async (req, res) => {
-  try {
-    const product = await productController.addProduct(req.body);
-    req.io.emit('products', await productController.getProducts());
-    res.status(201).json({message: 'Produto criado', payload: product});
-  } catch (e) {
-    res.status(e.statusCode).json({message: e.message});
-  }
-});
+/**
+ * @openapi
+ * /api/products/:
+ *   post:
+ *     summary: Add a new product
+ *     tags: [Products]
+ *     responses:
+ *       201:
+ *         description: Product created
+ *       400:
+ *         description: Bad request
+ */
+router.post('/', checkAdminOrPremiumJson, productController.addProduct);
 
-router.put('/:pid', async (req, res) => {
-  try {
-    const product = await productController.updateProduct(req.params.pid, req.body);
-    req.io.emit('products', await productController.getProducts());
-    res.status(200).json({message: 'Produto atualizado', payload: product});
-  } catch (e) {
-    res.status(e.statusCode).json({message: e.message});
-  }
-});
+/**
+ * @openapi
+ * /api/products/{pid}:
+ *   put:
+ *     summary: Update a specific product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     responses:
+ *       200:
+ *         description: Product updated
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Product not found
+ */
+router.put('/:pid', checkAdminOrPremiumJson, productController.updateProduct);
 
-router.delete('/:pid', async (req, res) => {
-  try {
-    await productController.deleteProduct(req.params.pid);
-    req.io.emit('products', await productController.getProducts());
-    res.status(204).json({message: 'Produto excluído'});
-  } catch (e) {
-    res.status(e.statusCode).json({message: e.message});
-  }
-});
+/**
+ * @openapi
+ * /api/products/{pid}:
+ *   delete:
+ *     summary: Delete a specific product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: pid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The product ID
+ *     responses:
+ *       204:
+ *         description: Product deleted
+ *       404:
+ *         description: Product not found
+ */
+router.delete('/:pid', checkAdminOrPremiumJson, productController.deleteProduct);
 
 export default router;

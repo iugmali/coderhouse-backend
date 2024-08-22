@@ -20,6 +20,10 @@ main {
     padding-right: 1rem;
 }
 
+input[type="file"] {
+    display: none;
+}
+
 .container {
     display: grid;
     grid-template-columns: 1fr;
@@ -97,7 +101,7 @@ main {
     text-align:justify;
 }
 
-.cart-button {
+.cart-button, .remove-button {
     opacity: 0.8;
     position: absolute;
     right: 0.5rem;

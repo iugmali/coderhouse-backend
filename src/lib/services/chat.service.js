@@ -1,9 +1,6 @@
 import ProfanityService from "./profanity/profanity.service.js";
 import {censorWord, isProfane} from "../util.js";
-import MessageService from "../../dao/services/db/message.service.js";
-import messageModel from "../../dao/models/message.model.js";
-
-const messageService = new MessageService(messageModel);
+import {messageService} from "../../factory/message.factory.js";
 
 class ChatService {
   constructor() {

@@ -1,8 +1,36 @@
 // Descomente a linha abaixo caso não tenha o arquivo http-client.env.json configurado
 #@HostAddress= http://localhost:8080
 
-@ProductId= 6615fc3dd9adfd4de76b2793
-@CartId= 6629d416a1dff24a0cda6d0e
+@ProductId= 6628fd902fb730e28bbbe701
+@CartId= 66999f30497c127ec14b10c6
+@UserId= 6631808c2db12267e347951d
+
+### ReturnFakeProducts
+GET {{HostAddress}}/mockingproducts
+
+### LoginAsAdmin
+POST {{HostAddress}}/login
+Content-Type: application/json
+
+{
+  "email": "adminCoder@coder.com",
+  "password": "adminCod3r123"
+}
+
+### LoginAsUser
+POST {{HostAddress}}/login
+Content-Type: application/json
+
+{
+  "email": "iugmali@gmail.com",
+  "password": "654321"
+}
+
+### GetSession
+GET {{HostAddress}}/api/sessions/current
+
+### TogglePremium
+POST {{HostAddress}}/api/users/premium/{{UserId}}
 
 ### GetProducts
 GET {{HostAddress}}/api/products
@@ -26,8 +54,8 @@ Content-Type: application/json
 
 {
   "title": "",
-  "description": "Description 1",
-  "code": "P1",
+  "description": "Nova descrição",
+  "code": "P1800",
   "price": 100,
   "status": true,
   "stock": 10,
@@ -39,12 +67,12 @@ POST {{HostAddress}}/api/products
 Content-Type: application/json
 
 {
-  "title": "Product 9",
-  "description": "Description for product 9",
-  "code": "p89i0",
-  "price": 199,
-  "stock": 20,
-  "category": "Category 2"
+  "title": "Laptop",
+  "description": "Outro produto",
+  "code": "p4409024",
+  "price": 299,
+  "stock": 35,
+  "category": "Outra"
 }
 
 ### UpdateProduct
@@ -92,8 +120,11 @@ POST {{HostAddress}}/api/carts/{{CartId}}/product/{{ProductId}}
 Content-Type: application/json
 
 {
-  "quantity": 2
+  "quantity": 3
 }
+
+### PurchaseProductsFromCart
+POST {{HostAddress}}/api/carts/{{CartId}}/purchase
 
 ### RemoveProductsFromCart
 DELETE {{HostAddress}}/api/carts/{{CartId}}

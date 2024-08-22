@@ -26,21 +26,24 @@ AUTH_SECRET=
 GITHUB_LOGIN_CLIENT_ID=
 GITHUB_LOGIN_CLIENT_SECRET=
 GITHUB_LOGIN_CALLBACK_URL=
+SENDGRID_API_KEY=
+SENDGRID_FROM_EMAIL=
 ```
 - `BASE_URL` é a URL base do projeto, por exemplo, `BASE_URL="http://localhost:8080"`.
 - `PERSIST_MODE="filesystem"` para persistir os datos de produtos e carts em arquivos, ou `PERSIST_MODE="mongodb"` para persistir em um banco de dados MongoDB.
 - `MONGODB_CONNECTION` precisa ser a string de conexão do seu banco de dados MongoDB, caso opte pela persistência via mongodb.
 - `AUTH_SECRET` é a chave secreta para a sessão de usuários. Execute o comando `openssl rand -base64 32` para gerar uma chave secreta.
 - `GITHUB_LOGIN_CLIENT_ID`, `GITHUB_LOGIN_CLIENT_SECRET` e `GITHUB_LOGIN_CALLBACK_URL` são as credenciais e a rota de callback para autenticação via GitHub.
+- `SENDGRID_API_KEY` é a chave da api do Sendgrid para envio de emails
+- `SENDGRID_FROM_EMAIL` é o email de origem para envio de emails já registrado no sendgrid
 
 ## Execução
 
 Para executar o projeto, execute o comando:
 ```bash
-npm start
+npm run dev
 ```
 O projeto estará disponível em `http://localhost:8080`.
-
 
 ## API endpoints (com exemplos)
 
@@ -115,4 +118,25 @@ O projeto estará disponível em `http://localhost:8080`.
     {
       "quantity": 10
     }
+  ```
+
+- **Atualizando a quantidade de um produto de id {productId} no carrinho {cartId}**
+  ```
+  PUT /api/carts/{cartId}/product/{productId}
+  Content-Type: application/json
+  ```
+   ```json
+    {
+      "quantity": 10
+    }
+  ```
+
+- **Removendo um produto de id {productId} do carrinho {cartId}**
+  ```
+    DELETE /api/carts/{cartId}/product/{productId}
+  ```
+
+- **Removendo todos os produtos de um carrinho de id {cartId}**
+  ```
+    DELETE /api/carts/{cartId}
   ```

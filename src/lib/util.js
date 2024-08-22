@@ -2,6 +2,9 @@ import ProfanityService from "./services/profanity/profanity.service.js";
 import mongoose from "mongoose";
 import {BadRequestError, NotFoundError} from "./exceptions/errors.js";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+
+import {faker} from "@faker-js/faker/locale/pt_BR";
 
 export const isProfane = (word) => {
   const profanity = new ProfanityService();
@@ -23,8 +26,31 @@ export const createHash = (password) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 };
 
-export const isValidPassword = async (user, password) => {
-  return bcrypt.compareSync(password, user.password);
+export const generateCode = () => {
+  return crypto.randomBytes(32).toString("hex");
+}
+
+export const generateFakeProduct = () => {
+  return {
+    _id: faker.database.mongodbObjectId(),
+    title: faker.commerce.productName(),
+    description: faker.commerce.productDescription(),
+    code: faker.commerce.isbn(),
+    price: parseFloat(faker.commerce.price({
+      min: 10000,
+      max: 100000
+    }))/100,
+    status: faker.datatype.boolean(),
+    stock: faker.number.int(),
+    category: faker.commerce.department(),
+    thumbnails: [faker.image.url()],
+    createdAt: faker.date.recent(),
+    __v: 0
+  };
+}
+
+export const isValidHash = async (string ,hash) => {
+  return bcrypt.compareSync(string, hash);
 }
 
 export const handleProductQueries = (queries) => {
@@ -32,13 +58,20 @@ export const handleProductQueries = (queries) => {
   let page = +queries.page;
   let query = queries.query;
   let sort = queries.sort;
-  if (!limit || limit < 0) {
+  if (!limit || limit < 1) {
     limit = 10;
   }
-  if (!page || page < 0) {
+  if (!page || page < 1) {
     page = 1;
   }
   return { limit, page, query, sort };
+}
+
+
+export const throwErrorWhenMongooseNotFound = (item, message) => {
+  if (!item) {
+    throw new NotFoundError(message);
+  }
 }
 
 export const handleValidationErrors = (e) => {
@@ -51,9 +84,12 @@ export const handleValidationErrors = (e) => {
   }
 };
 
-export const handleNotFoundError = (e) => {
+export const handleNotFoundError = (e, message) => {
+  if (e instanceof NotFoundError) {
+    throw e;
+  }
   if (e instanceof mongoose.Error.DocumentNotFoundError || e instanceof mongoose.Error.CastError) {
-    throw new NotFoundError('Document not found.');
+    throw new NotFoundError(message);
   }
 };
 

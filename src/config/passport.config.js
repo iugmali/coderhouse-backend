@@ -1,11 +1,10 @@
 import passport from 'passport';
 import {Strategy as GithubStrategy} from 'passport-github2';
 import {Strategy as LocalStrategy} from 'passport-local';
-import { isValidPassword, createHash } from '../lib/util.js';
-import UserService from "../dao/services/db/user.service.js";
-import User from "../dao/models/user.model.js";
+import { isValidHash, createHash } from '../lib/util.js';
+import {cartService} from "../factory/cart.factory.js";
+import {userService} from "../factory/user.factory.js";
 
-const userService = new UserService(User);
 
 const initializePassport = () => {
   passport.use('github', new GithubStrategy({
@@ -15,19 +14,30 @@ const initializePassport = () => {
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const user = await userService.getUserByEmail(profile._json.email);
+      user.last_connection = Date.now();
+      await user.save();
+      if (!user.cart) {
+        const cart = await cartService.addCart({});
+        await userService.addCartToUser(user.email, cart._id);
+        user.cart = cart._id;
+      }
       return done(null, user);
     } catch (error) {
       try {
         const userFields = {
-          name: profile._json.name,
+          first_name: profile._json.name,
           email: profile._json.email,
           role: 'user',
-          password: ''
+          password: '',
+          last_connection: Date.now()
         }
         const result = await userService.createUser(userFields);
+        const cart = await cartService.addCart({});
+        await userService.addCartToUser(user.email, cart._id);
+        result.cart = cart._id;
         return done(null, result);
       } catch (error) {
-        return done(error);
+        return done(null, false);
       }
     }
   }));
@@ -37,19 +47,24 @@ const initializePassport = () => {
     passwordField: 'password',
     passReqToCallback: true
   }, async (req, email, password, done) => {
-    const { name } = req.body;
+    const { first_name, last_name, age } = req.body;
     const hashedPassword = createHash(password);
     const userFields = {
-      name,
+      first_name,
+      last_name,
+      age,
       email,
       role: 'user',
       password: hashedPassword
     };
     try {
       const user = await userService.createUser(userFields);
+      const cart = await cartService.addCart({});
+      await userService.addCartToUser(user.email, cart._id);
+      user.cart = cart._id;
       return done(null, user);
     } catch (error) {
-      return done(error);
+      return done(null, false);
     }
   }));
 
@@ -62,13 +77,20 @@ const initializePassport = () => {
       if (!user) {
         return done(null, false);
       }
-      const isValid = await isValidPassword(user, password);
+      const isValid = await isValidHash(password, user.password);
       if (!isValid) {
         return done(null, false);
       }
+      if (!user.cart) {
+        const cart = await cartService.addCart({});
+        await userService.addCartToUser(user.email, cart._id);
+        user.cart = cart._id;
+      }
+      user.last_connection = Date.now();
+      await user.save();
       return done(null, user);
     } catch (error) {
-      return done(error);
+      return done(null, false);
     }
   }));
 
