@@ -5,8 +5,6 @@
 @CartId= 66999f30497c127ec14b10c6
 @UserId= 6631808c2db12267e347951d
 
-### ReturnFakeProducts
-GET {{HostAddress}}/mockingproducts
 
 ### LoginAsAdmin
 POST {{HostAddress}}/login
@@ -69,7 +67,7 @@ Content-Type: application/json
 {
   "title": "Laptop",
   "description": "Outro produto",
-  "code": "p4409024",
+  "code": "p44090246",
   "price": 299,
   "stock": 35,
   "category": "Outra"
